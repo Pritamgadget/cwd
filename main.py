@@ -931,12 +931,6 @@ async def info(ctx, user: discord.Member):
     embed.set_thumbnail(url=user.avatar_url)
     await ctx.send(embed=embed)
     
-@client.event
-async def on_message(message):
-    embeds = message.embeds
-    for embed in embeds:
-        list1 = embed.to_dict()
-        if "Pig Latin" in list1:
-            await message.delete()
+
 
 client.run(os.getenv('TOKEN'))
