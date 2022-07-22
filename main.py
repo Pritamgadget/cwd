@@ -517,7 +517,7 @@ async def ping(ctx,*, member: discord.Member):
 
 
 @client.command()
-async def h(ctx):
+async def help(ctx):
     em = discord.Embed (
         title = 'Help : Page 1/4',
         description = 'Use Pls help <command> for more info on a command',
