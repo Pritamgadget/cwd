@@ -531,7 +531,7 @@ async def help(ctx):
     
     em2 = discord.Embed (
         title = 'Page 2/3',
-        description = 'Description',
+        description = 'Use Pls help <command> for more info on a command',
         colour = discord.Colour.red())
     em2.add_field(name = "Translate : [translate / ts]", value = "Translate any text into English")
     em2.add_field(name = "Giveaway : [Giveaway, gw] ", value = "Do a Giveaway")
@@ -543,7 +543,7 @@ async def help(ctx):
 
     em3 = discord.Embed (
         title = 'Page 3/3',
-        description = 'Description',
+        description = 'Use Pls help <command> for more info on a command',
         colour = discord.Colour.red()
     )
     em3.add_field(name = "Avatar : [avatar] ", value = "Fetch avatar of a User")
