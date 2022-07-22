@@ -516,20 +516,88 @@ async def ping(ctx,*, member: discord.Member):
 
 
 
-@client.group(invoke_without_command=True)
-async def help(ctx):
-  em = discord.Embed(title = "Help", description = "Use Pls help <command> for more info on a command ")
+@client.command()
+async def h(ctx):
+    em = discord.Embed (
+        title = 'Help : Page 1/4',
+        description = 'Use Pls help <command> for more info on a command',
+        colour = discord.Colour.red())
+    em.add_field(name = "Snipe : [snipe / s]", value = "Snipe last deleted message")
+    em.add_field(name = "Snipe Edit : [snipeedit/se]", value = "Snipe the last edited message")
+    em.add_field(name = "DM : [dm]", value = "Send Direct message to somone/everyone via bot")
+    em.add_field(name = "Poll : [poll]", value = "Make a simpe 'Yes' or 'No' Poll")
+    em.add_field(name = "Choose : [choose] ", value = "Choose one item from a list")
+    em.add_field(name = "Pick : [pick] ", value = "Pick Multiple Items from list")
+    
+    em2 = discord.Embed (
+        title = 'Page 2/4',
+        description = 'Description',
+        colour = discord.Colour.red())
+    em2.add_field(name = "Translate : [translate / ts]", value = "Translate any text into English")
+    em2.add_field(name = "Giveaway : [Giveaway, gw] ", value = "Do a Giveaway")
+    em2.add_field(name = "8ball : [8ball / 8b] ", value = "Ask your questions")
+    em2.add_field(name = "Oxford Dictionary : [define] ", value = "Use Oxford dictionary to fetch meaning of a word")
+    em2.add_field(name = "Urban Dictionary [urban] ", value = "Use urban dictionary to fetch meaning")
+    em2.add_field(name = "User Info : [info] ", value = "Fetch info a User")
+    
 
-  em.add_field(name = "Snipe", value = "snipe, s")
-  em.add_field(name = "DM", value = "dm")
-  em.add_field(name = "Translate", value = "translate, ts")
-  em.add_field(name = "Poll", value = "poll, pollop")
-  em.add_field(name = "Choose/Pick", value = "choose, pick")
-  em.add_field(name = "Giveaway", value = "Giveaway, gw")
-  em.add_field(name = "Fun", value = "No Fun")
-  
+    em3 = discord.Embed (
+        title = 'Page 3/4',
+        description = 'Description',
+        colour = discord.Colour.red()
+    )
+    em3.add_field(name = "Avatar : [avatar] ", value = "Fetch avatar of a User")
+    em3.add_field(name = "Say : [say] ", value = "Make the bot say what you want to say")
+    em3.add_field(name = "Reminder0 : [reminder/rem/r] ", value = "Set a reminder")
+    em3.add_field(name = "Emoji : [emoji] ", value = "Fetch emoji from any message using message ID")
+    em3.add_field(name = "Token : [token] ", value = "Token plebs including their assistance")
+    em3.add_field(name = "Steal : [steal] ", value = "Steal Other's Luck")
 
-  await ctx.send(embed = em)
+    em4 = discord.Embed (
+        title = 'Page 4/4',
+        description = 'Description',
+        colour = discord.Colour.red()
+    ) 
+    em4.add_field(name = "Action Commands ", value = f"hug, kick, punch, stab, lick \n bye, xyz")
+
+
+    pages = [em, em2, em3, em4]
+
+    message = await ctx.send(embed = em)
+    await message.add_reaction('⏮')
+    await message.add_reaction('◀')
+    await message.add_reaction('▶')
+    await message.add_reaction('⏭')
+
+    def check(reaction, user):
+        return user == ctx.author
+
+    i = 0
+    reaction = None
+
+    while True:
+        if str(reaction) == '⏮':
+            i = 0
+            await message.edit(embed = pages[i])
+        elif str(reaction) == '◀':
+            if i > 0:
+                i -= 1
+                await message.edit(embed = pages[i])
+        elif str(reaction) == '▶':
+            if i < 2:
+                i += 1
+                await message.edit(embed = pages[i])
+        elif str(reaction) == '⏭':
+            i = 2
+            await message.edit(embed = pages[i])
+        
+        try:
+            reaction, user = await client.wait_for('reaction_add', timeout = 30.0, check = check)
+            await message.remove_reaction(reaction, user)
+        except:
+            break
+
+    await message.clear_reactions()
 
 @help.command(aliases=['dm, Dm'])
 async def dm(ctx):
