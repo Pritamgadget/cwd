@@ -519,7 +519,7 @@ async def ping(ctx,*, member: discord.Member):
 @client.command()
 async def help(ctx):
     em = discord.Embed (
-        title = 'Help : Page 1/4',
+        title = 'Help : Page 1/3',
         description = 'Use Pls help <command> for more info on a command',
         colour = discord.Colour.red())
     em.add_field(name = "Snipe : [snipe / s]", value = "Snipe last deleted message")
@@ -530,7 +530,7 @@ async def help(ctx):
     em.add_field(name = "Pick : [pick] ", value = "Pick Multiple Items from list")
     
     em2 = discord.Embed (
-        title = 'Page 2/4',
+        title = 'Page 2/3',
         description = 'Description',
         colour = discord.Colour.red())
     em2.add_field(name = "Translate : [translate / ts]", value = "Translate any text into English")
@@ -542,7 +542,7 @@ async def help(ctx):
     
 
     em3 = discord.Embed (
-        title = 'Page 3/4',
+        title = 'Page 3/3',
         description = 'Description',
         colour = discord.Colour.red()
     )
