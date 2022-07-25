@@ -369,7 +369,7 @@ async def say(ctx, *, text):
 
         await ctx.send(f"{text}")
     elif text == "Only Tam is allowed to use it noob.":
-        await ctx.send(f"{ctx.message.author} stfu")
+        await ctx.send(f"{ctx.message.author.mention} stfu")
     else:
         await ctx.send('Only Tam is allowed to use it noob.')
 
