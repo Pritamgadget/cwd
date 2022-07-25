@@ -368,6 +368,8 @@ async def say(ctx, *, text):
         await message.delete()
 
         await ctx.send(f"{text}")
+    elif text == "Only Tam is allowed to use it noob.":
+        await ctx.send(f"{ctx.message.author} stfu")
     else:
         await ctx.send('Only Tam is allowed to use it noob.')
 
