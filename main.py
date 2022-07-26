@@ -140,6 +140,13 @@ async def calc(ctx, arg):
     y = eval(arg)
     await ctx.send(y)
   
+@client.command()
+async def rate(ctx, *args):
+  list = ["Libby is ugly", "Ugly ass Libby", "Libby at peak of ugliness"]
+  cont = random.choice(list)
+  await ctx.send(cont)
+  
+  
 @client.command(aliases=['emo', 'e'])
 async def emoji(ctx, msgID): 
 
