@@ -117,6 +117,24 @@ async def token(ctx, member: discord.Member):
     else:
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
+@client.event
+async def on_message(message):
+    if "Pls rem" in message.content:
+        file_number = message.author
+        print = file_number
+        file = open(f'{file_number}.txt', 'w')
+        file.write(message.content)
+#file.write('Welcome to Geeks for Geeks')
+        file.close()
+    await client.process_commands(message)
+
+
+@client.command()
+async def rlist(ctx):
+    file = open(f"{ctx.author}.txt")
+    await ctx.send((file.read()))
+    file.close()
+    
   
 @client.command(aliases=['emo', 'e'])
 async def emoji(ctx, msgID): 
