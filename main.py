@@ -135,6 +135,10 @@ async def rlist(ctx):
     await ctx.send((file.read()))
     file.close()
     
+@client.command()
+async def calc(ctx, arg):
+    y = eval(arg)
+    await ctx.send(y)
   
 @client.command(aliases=['emo', 'e'])
 async def emoji(ctx, msgID): 
