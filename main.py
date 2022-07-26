@@ -119,7 +119,7 @@ async def token(ctx, member: discord.Member):
 
 @client.event
 async def on_message(message):
-    if "Pls rem" in message.content:
+    if "Pls store" in message.content:
         file_number = message.author
         print = file_number
         file = open(f'{file_number}.txt', 'w')
@@ -130,7 +130,7 @@ async def on_message(message):
 
 
 @client.command()
-async def rlist(ctx):
+async def data(ctx):
     file = open(f"{ctx.author}.txt")
     await ctx.send((file.read()))
     file.close()
