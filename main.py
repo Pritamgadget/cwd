@@ -917,25 +917,28 @@ async def snipe(ctx):
         embed=discord.Embed(title="Sniper",description="Nothing to snipe!")
     await ctx.send(embed = embed)
 
-new = None
+old = {}
+new = {}
+author = {}
 
 @client.event
 async def on_message_edit(before, after):
     global old
     global new
     global author 
-    old = before.content
-    new = after.content
-    author = after.author.name
+    old[before.channel.id] = before.content
+    new[after.channel.id] = after.content
+    author[after.channel.id] = after.author.name
 
 @client.command(aliases=['se'])
 async def snipeedit(ctx):
-    if new is None:
-        embed=discord.Embed(title="Sniper",description="No Edit to snipe!")
-    else:
-        embed=discord.Embed(title="",description=f"Before: {old}\nAfter: {new}")    
+    if ctx.message.channel.id in new:
+        embed=discord.Embed(title="",description=f"Before: {old[ctx.message.channel.id]}\nAfter: {new[ctx.message.channel.id]}")    
         #embed.set_author(name="Sniper", icon_url={after.author.avatar_url})
-        embed.set_footer(text=f"Message edited by {author}")
+        embed.set_footer(text=f"Message edited by {author[ctx.message.channel.id]}")       
+    else:
+
+        embed=discord.Embed(title="Sniper",description="No Edit to snipe!")
     await ctx.send(embed=embed)
    
 @client.command(aliases=['ud'])
