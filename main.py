@@ -193,13 +193,13 @@ async def words(ctx):
         except asyncio.TimeoutError:
                 await ctx.send(f"You're out of time, The word was **__{choose_a_word.upper()}__**")
         await ctx.send("Next Question in 10 seconds")
-        await asyncio.sleep(1)
+        await asyncio.sleep(10)
 
 
         
 @client.event
 async def on_message(message):
-    if message.author.id == 896740771166822471:
+    if message.author.id == 894900419837435924:
         embeds = message.embeds
         for embed in embeds:
          x = embed.to_dict()
