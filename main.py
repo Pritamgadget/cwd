@@ -221,24 +221,7 @@ async def on_message(message):
     await client.process_commands(message)
     
         
-@client.event
-async def on_message(message):
-    if "Pls store" in message.content:
-        file_number = message.author
-        print = file_number
-        file = open(f'{file_number}.txt', 'w')
-        file.write(message.content)
-#file.write('Welcome to Geeks for Geeks')
-        file.close()
-    await client.process_commands(message)
 
-
-@client.command()
-async def data(ctx):
-    file = open(f"{ctx.author}.txt")
-    await ctx.send((file.read()))
-    file.close()
-    
 @client.command()
 async def calc(ctx, arg):
     y = eval(arg)
