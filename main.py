@@ -11,7 +11,7 @@ import datetime
 import time
 import json
 import requests
-
+from wordlist import list
 
 
 intents = discord.Intents.default()
@@ -21,6 +21,7 @@ client.remove_command("help")
 
 
 deleted_messages = {}
+word_game = False
 
 
 winlist2 = [
@@ -117,6 +118,107 @@ async def token(ctx, member: discord.Member):
     else:
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
+@client.command()
+async def stopword(ctx):
+    global word_game
+    word_game = False
+    await ctx.send("Word game has stopped")
+
+sb = {}
+
+@client.command()
+async def words(ctx):
+    global word_game
+    global sb
+    word_game = True
+    while (word_game==True):
+        choose_a_word = random.choice(list)
+        print(choose_a_word)
+        lst = [x for x in choose_a_word]
+        sb = choose_a_word
+        if len(choose_a_word) <= 3 :
+                poppingup = ''.join(random.sample(lst, 1))
+                replacing = ''.join(lst)
+                hang_word = replacing.replace(poppingup, "#", 1)
+                emb = discord.Embed(color = 0x2ecc71)
+                emb.set_author(name = f'The Word Play!')
+                emb.add_field(name = 'Word is: ', value = f'{hang_word}', inline = False)
+                await ctx.send(embed = emb)
+        elif len(choose_a_word) < 6 :
+                poppingup = (random.sample(lst, 2))
+                print(poppingup)
+                items = choose_a_word.replace(poppingup[0], "#", 1)
+                items = items.replace(poppingup[1], "#", 1)
+                emb = discord.Embed(color = 0x2ecc71)
+                emb.set_author(name = f'The Word Play!')
+                emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
+                await ctx.send(embed = emb)
+        elif len(choose_a_word) < 7 :
+                poppingup = (random.sample(lst, 3))
+                print(poppingup)
+                items = choose_a_word.replace(poppingup[0], "#", 1)
+                items = items.replace(poppingup[1], "#", 1)
+                items = items.replace(poppingup[2], "#", 1)
+                emb = discord.Embed(color = 0x2ecc71)
+                emb.set_author(name = f'The Word Play!')
+                emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
+                await ctx.send(embed = emb)
+        elif len(choose_a_word) < 10 :
+                poppingup = (random.sample(lst, 4))
+                print(poppingup)
+                items = choose_a_word.replace(poppingup[0], "#", 1)
+                items = items.replace(poppingup[1], "#", 1)
+                items = items.replace(poppingup[2], "#", 1)
+                items = items.replace(poppingup[3], "#", 1)
+                emb = discord.Embed(color = 0x2ecc71)
+                emb.set_author(name = f'The Word Play!')
+                emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
+                await ctx.send(embed = emb)
+        elif len(choose_a_word) > 10 :
+                poppingup = (random.sample(lst, 5))
+                print(poppingup)
+                items = choose_a_word.replace(poppingup[0], "#")
+                items = items.replace(poppingup[1], "#", 1)
+                items = items.replace(poppingup[2], "#", 1)
+                items = items.replace(poppingup[3], "#", 1)
+                items = items.replace(poppingup[4], "#", 1)
+                emb = discord.Embed(color = 0x2ecc71)
+                emb.set_author(name = f'The Word Play!')
+                emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
+                await ctx.send(embed = emb)
+        try:
+                msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 30)
+                await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
+        except asyncio.TimeoutError:
+                await ctx.send(f"You're out of time, The word was **__{choose_a_word.upper()}__**")
+        await ctx.send("Next Question in 10 seconds")
+        await asyncio.sleep(1)
+
+
+        
+@client.event
+async def on_message(message):
+    if message.author.id == 896740771166822471:
+        embeds = message.embeds
+        for embed in embeds:
+         x = embed.to_dict()
+         x = str(x)
+         if 'The Word Play' in x:
+                await asyncio.sleep(10)
+                try:
+                    words_define = sb
+                    url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + words_define.lower() + "?fields=" + fields
+                    r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
+                    t = json.dumps(r.json())
+                    l = json.loads(json.dumps(r.json()))
+                    f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
+                    embed = discord.Embed(colour = discord.Colour.from_rgb(107, 230, 255), title = "HINT", description = str(f))
+                    await message.channel.send(content = None, embed = embed)
+                except KeyError:
+                 print("No Hint for this")
+    await client.process_commands(message)
+    
+        
 @client.event
 async def on_message(message):
     if "Pls store" in message.content:
