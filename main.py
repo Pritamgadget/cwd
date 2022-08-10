@@ -120,7 +120,7 @@ async def token(ctx, member: discord.Member):
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
 @client.command()
-async def stopword(ctx):
+async def stopwords(ctx):
     global word_game
     word_game = False
     await ctx.send("Word game has stopped")
