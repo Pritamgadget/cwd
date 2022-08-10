@@ -213,7 +213,8 @@ async def on_message(message):
                     t = json.dumps(r.json())
                     l = json.loads(json.dumps(r.json()))
                     f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
-                    embed = discord.Embed(colour = discord.Colour.from_rgb(107, 230, 255), title = "HINT", description = str(f))
+                    
+                    embed = discord.Embed(color = 0x2ecc71), title = "HINT", description = str(f))
                     await message.channel.send(content = None, embed = embed)
                 except KeyError:
                  print("No Hint for this")
