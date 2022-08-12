@@ -120,23 +120,20 @@ async def token(ctx, member: discord.Member):
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
 @client.command()
-async def stopwords(ctx):
-    global word_game
-    word_game = False
-    await ctx.send("Word game has stopped")
-
-sb = {}
-
-@client.command()
-async def words(ctx):
-    global word_game
-    global sb
+async def word(ctx):
+  global word_game
+  if word_game == False:
     word_game = True
     while (word_game==True):
         choose_a_word = random.choice(list1)
         print(choose_a_word)
         lst = [x for x in choose_a_word]
-        sb = choose_a_word
+        url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + choose_a_word + "?fields=" + fields
+        r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
+        t = json.dumps(r.json())
+        l = json.loads(json.dumps(r.json()))
+        f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
+        embed = discord.Embed(color = 0x2ecc71, title = "HINT", description = str(f))
         if len(choose_a_word) <= 3 :
                 poppingup = ''.join(random.sample(lst, 1))
                 replacing = ''.join(lst)
@@ -188,37 +185,24 @@ async def words(ctx):
                 emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
                 await ctx.send(embed = emb)
         try:
-                msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 30)
+                msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 10)
                 await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
         except asyncio.TimeoutError:
-                await ctx.send(f"You're out of time, The word was **__{choose_a_word.upper()}__**")
-        await ctx.send("Next Question in 10 seconds")
-        await asyncio.sleep(10)
-
-
-        
-@client.event
-async def on_message(message):
-    if message.author.id == 894900419837435924:
-        embeds = message.embeds
-        for embed in embeds:
-         x = embed.to_dict()
-         x = str(x)
-         if 'The Word Play' in x:
-                await asyncio.sleep(10)
+                await ctx.channel.send(content = None, embed = embed)
                 try:
-                    words_define = sb
-                    url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + words_define.lower() + "?fields=" + fields
-                    r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
-                    t = json.dumps(r.json())
-                    l = json.loads(json.dumps(r.json()))
-                    f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
-                    
-                    embed = discord.Embed(color = 0x2ecc71, title = "HINT", description = str(f))
-                    await message.channel.send(content = None, embed = embed)
-                except KeyError:
-                 print("No Hint for this")
-    await client.process_commands(message)
+                 msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 20)
+                 await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
+                except asyncio.TimeoutError:
+                    await ctx.send(f"You're out of time, The word was **__{choose_a_word.upper()}__**")
+
+        if word_game == False:
+         pass
+        else:
+         await ctx.send("Next Question in 10 seconds")
+         await asyncio.sleep(10)
+  else:
+    word_game = False
+    await ctx.send("**Word game has stopped**")
     
         
 
@@ -403,8 +387,8 @@ async def dm(ctx, *, message_and_mentions = None):
                 await ctx.send("Message wasn't sent to a User")
               
     
-app_id = '93b58d98'
-app_key = 'ea66df7a1fc4be864436d235cee2c6c9'
+app_id = 'f1b477f2'
+app_key = '2fd4ee4cbe6f6751b878c82559aee353'
 language = 'en-us'
 fields = 'definitions'
 
