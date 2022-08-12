@@ -128,12 +128,6 @@ async def wordplay(ctx):
         choose_a_word = random.choice(list1)
         print(choose_a_word)
         lst = [x for x in choose_a_word]
-        url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + choose_a_word + "?fields=" + fields
-        r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
-        t = json.dumps(r.json())
-        l = json.loads(json.dumps(r.json()))
-        f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
-        embed = discord.Embed(color = 0x2ecc71, title = "HINT", description = str(f))
         if len(choose_a_word) <= 3 :
                 poppingup = ''.join(random.sample(lst, 1))
                 replacing = ''.join(lst)
@@ -188,18 +182,27 @@ async def wordplay(ctx):
                 msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 10)
                 await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
         except asyncio.TimeoutError:
+            try:
+                url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + choose_a_word + "?fields=" + fields
+                r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
+                t = json.dumps(r.json())
+                l = json.loads(json.dumps(r.json()))
+                f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
+                embed = discord.Embed(color = 0x2ecc71, title = "HINT", description = str(f))
                 await ctx.channel.send(content = None, embed = embed)
+            except KeyError:
+                await ctx.send("**No Hint found in Oxford Dictionary**")
                 try:
                  msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 20)
                  await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
                 except asyncio.TimeoutError:
                     await ctx.send(f"You're out of time, The word was **__{choose_a_word.upper()}__**")
 
-        if word_game == False:
-         pass
-        else:
-         await ctx.send("Next Question in 10 seconds")
-         await asyncio.sleep(10)
+      if word_game == False:
+        pass
+      else:
+        await ctx.send("Next Question in 10 seconds")
+        await asyncio.sleep(10)
   else:
     word_game = False
     await ctx.send("**Word game has stopped**")
