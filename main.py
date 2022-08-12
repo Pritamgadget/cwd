@@ -193,10 +193,10 @@ async def wordplay(ctx):
                 await ctx.channel.send(content = None, embed = embed)
             except KeyError:
                 await ctx.send("**No Hint found in Oxford Dictionary**")
-                try:
+            try:
                  msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 20)
                  await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
-                except asyncio.TimeoutError:
+            except asyncio.TimeoutError:
                     await ctx.send(f"You're out of time, The word was **__{choose_a_word.upper()}__**")
 
       if word_game == False:
@@ -207,7 +207,7 @@ async def wordplay(ctx):
   else:
     word_game = False
     await ctx.send("**Word game has stopped**")
-    
+
         
 
 @client.command()
