@@ -119,16 +119,17 @@ async def token(ctx, member: discord.Member):
     else:
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
+
 @client.command()
 async def wordplay(ctx):
   global word_game
   if word_game == False:
     word_game = True
     while (word_game==True):
-        choose_a_word = random.choice(list1)
-        print(choose_a_word)
-        lst = [x for x in choose_a_word]
-        if len(choose_a_word) <= 3 :
+      choose_a_word = random.choice(list1)
+      print(choose_a_word)
+      lst = [x for x in choose_a_word]
+      if len(choose_a_word) <= 3 :
                 poppingup = ''.join(random.sample(lst, 1))
                 replacing = ''.join(lst)
                 hang_word = replacing.replace(poppingup, "#", 1)
@@ -136,7 +137,7 @@ async def wordplay(ctx):
                 emb.set_author(name = f'The Word Play!')
                 emb.add_field(name = 'Word is: ', value = f'{hang_word}', inline = False)
                 await ctx.send(embed = emb)
-        elif len(choose_a_word) < 6 :
+      elif len(choose_a_word) < 6 :
                 poppingup = (random.sample(lst, 2))
                 print(poppingup)
                 items = choose_a_word.replace(poppingup[0], "#", 1)
@@ -145,7 +146,7 @@ async def wordplay(ctx):
                 emb.set_author(name = f'The Word Play!')
                 emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
                 await ctx.send(embed = emb)
-        elif len(choose_a_word) < 7 :
+      elif len(choose_a_word) < 7 :
                 poppingup = (random.sample(lst, 3))
                 print(poppingup)
                 items = choose_a_word.replace(poppingup[0], "#", 1)
@@ -155,7 +156,7 @@ async def wordplay(ctx):
                 emb.set_author(name = f'The Word Play!')
                 emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
                 await ctx.send(embed = emb)
-        elif len(choose_a_word) < 10 :
+      elif len(choose_a_word) < 10 :
                 poppingup = (random.sample(lst, 4))
                 print(poppingup)
                 items = choose_a_word.replace(poppingup[0], "#", 1)
@@ -166,7 +167,7 @@ async def wordplay(ctx):
                 emb.set_author(name = f'The Word Play!')
                 emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
                 await ctx.send(embed = emb)
-        elif len(choose_a_word) > 10 :
+      elif len(choose_a_word) > 10 :
                 poppingup = (random.sample(lst, 5))
                 print(poppingup)
                 items = choose_a_word.replace(poppingup[0], "#")
@@ -178,10 +179,10 @@ async def wordplay(ctx):
                 emb.set_author(name = f'The Word Play!')
                 emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
                 await ctx.send(embed = emb)
-        try:
+      try:
                 msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 10)
                 await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
-        except asyncio.TimeoutError:
+      except asyncio.TimeoutError:
             try:
                 url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + choose_a_word + "?fields=" + fields
                 r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
