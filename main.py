@@ -1046,4 +1046,4 @@ async def info(ctx, user: discord.Member):
     
 
 print("Bot is Online")
-client.run(os.getenv('TOKEN'))
+client.run('ODk0OTAwNDE5ODM3NDM1OTI0.YVwu9g.-rxhSmJNFl0uK42KaD7qI1WX9M0')
