@@ -1045,5 +1045,5 @@ async def info(ctx, user: discord.Member):
     await ctx.send(embed=embed)
     
 
-
+print("Bot is Online")
 client.run(os.getenv('TOKEN'))
