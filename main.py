@@ -119,6 +119,21 @@ async def token(ctx, member: discord.Member):
     else:
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
+@client.command()
+async def advice(ctx):
+    url = "https://api.adviceslip.com/advice"
+    r = requests.get(url)
+    print(r)
+    t = json.dumps(r.json())
+    l = json.loads(json.dumps(r.json()))
+    print(l)
+    lstr = l
+    lstr = str(lstr)
+    advice = lstr.split(":")[-1]
+    advice = advice.replace("}", "")
+    embed = discord.Embed(color = 0x2ecc71, title = "Random Advice", description = str(advice))
+    await ctx.send(content = None, embed = embed)
+
 
 @client.command()
 async def wordplay(ctx):
