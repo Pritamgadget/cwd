@@ -133,7 +133,24 @@ async def advice(ctx):
     advice = advice.replace("}", "")
     embed = discord.Embed(color = 0x2ecc71, title = "Random Advice", description = str(advice))
     await ctx.send(content = None, embed = embed)
+    
+@client.command()
+async def wyr(ctx):
 
+
+    url = "https://would-you-rather.p.rapidapi.com/wyr/random"
+
+    headers = {
+	"X-RapidAPI-Key": "d7b03ae2aemsh221e0b33974acc8p1a90edjsn180ce1579cba",
+	"X-RapidAPI-Host": "would-you-rather.p.rapidapi.com"
+     }
+
+    response = requests.request("GET", url, headers=headers)
+    question = response.text
+    embed = discord.Embed(color = 0x2ecc71, title = "Would You Rather", description = str(question))
+    await ctx.send(content = None, embed = embed)
+
+    
 
 @client.command()
 async def wordplay(ctx):
