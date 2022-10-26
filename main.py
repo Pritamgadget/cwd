@@ -152,8 +152,7 @@ async def wyr(ctx):
     question = question.replace("]", "")
     embed = discord.Embed(color = 0x2ecc71, title = "Would You Rather", description = str(question))
     await ctx.send(content = None, embed = embed)
-    embed = discord.Embed(color = 0x2ecc71, title = "Would You Rather", description = str(question))
-    await ctx.send(content = None, embed = embed)
+
 
     
 
