@@ -141,7 +141,7 @@ async def wyr(ctx):
     url = "https://would-you-rather.p.rapidapi.com/wyr/random"
 
     headers = {
-	"X-RapidAPI-Key": "0bf015d3c0mshc2fc0c272d6334ap1b5170jsn7e953dbcd498",
+	"X-RapidAPI-Key": "a152de9ebbmsh718b7c275a31ebbp142243jsn6c5158652183",
 	"X-RapidAPI-Host": "would-you-rather.p.rapidapi.com"
      }
 
