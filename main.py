@@ -120,6 +120,15 @@ async def token(ctx, member: discord.Member):
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
 @client.command()
+async def fact(ctx):
+    url = "https://uselessfacts.jsph.pl/random.json?language=en"
+    r = requests.get(url)
+    l = json.loads(json.dumps(r.json()))
+    fact = (l['text'])
+    embed = discord.Embed(color = 0x2ecc71, title = "Random Fact", description = str(fact))
+    await ctx.send(content = None, embed = embed)
+	
+@client.command()
 async def advice(ctx):
     url = "https://api.adviceslip.com/advice"
     r = requests.get(url)
