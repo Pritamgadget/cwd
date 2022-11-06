@@ -144,24 +144,22 @@ async def advice(ctx):
     await ctx.send(content = None, embed = embed)
     
 @client.command()
-async def wyr(ctx):
+async def wyr(ctx, id):
 
 
-    url = "https://would-you-rather.p.rapidapi.com/wyr/random"
+    url = f"https://would-you-rather-api.abaanshanid.repl.co/?id={id}"
 
-    headers = {
-	"X-RapidAPI-Key": "a152de9ebbmsh718b7c275a31ebbp142243jsn6c5158652183",
-	"X-RapidAPI-Host": "would-you-rather.p.rapidapi.com"
-     }
-
-    response = requests.request("GET", url, headers=headers)
-    question = response.text
-    question = question.split(":")[-1]
-    question = question.replace("}", "")
-    question = question.replace("]", "")
-    embed = discord.Embed(color = 0x2ecc71, title = "Would You Rather", description = str(question))
+    r = requests.get(url)
+    t = json.dumps(r.json())
+    l = json.loads(json.dumps(r.json()))
+    x = l.values()
+    x = str(x)
+    x = x.split(",")[-1]
+    x = x.replace("]", "")
+    x = x.replace(")", "")
+    print(x)
+    embed = discord.Embed(color = 0x2ecc71, title = "Would You Rather", description = str(x))
     await ctx.send(content = None, embed = embed)
-
 
     
 
