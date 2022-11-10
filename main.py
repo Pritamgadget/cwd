@@ -128,6 +128,23 @@ async def fact(ctx):
     embed = discord.Embed(color = 0x2ecc71, title = "Random Fact", description = str(fact))
     await ctx.send(content = None, embed = embed)
 	
+	
+@client.command()
+async def porn(ctx):
+	
+
+        url = "https://steppschuh-json-porn-v1.p.rapidapi.com/image/5817567562170368/400.jpg"
+
+        headers = {
+	            "X-RapidAPI-Key": "d71b1aba3fmsh2818eec48343a27p1ebe0ajsn2bdb09e0212c",
+	            "X-RapidAPI-Host": "steppschuh-json-porn-v1.p.rapidapi.com"
+	}
+
+        response = requests.request("GET", url, headers=headers)
+	ctx.send(response.text)
+
+print(response.text)
+	
 @client.command()
 async def advice(ctx):
     url = "https://api.adviceslip.com/advice"
