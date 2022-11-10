@@ -220,7 +220,10 @@ async def on_message(message):
 @client.command()
 async def porn(ctx):
 	choose = random.choice(nrop)
-	await ctx.send(choose)
+	if ctx.channel is "nsfw":
+		await ctx.send(choose)
+	else:
+		await ctx.send("No lewd stuff here lewdass")
 	
 	
 
