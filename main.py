@@ -217,14 +217,14 @@ async def on_message(message):
         
   await client.process_commands(message)
 
+
 @client.command()
 async def porn(ctx):
-	choose = random.choice(nrop)
-	if ctx.channel is "nsfw":
-		await ctx.send(choose)
-	else:
-		await ctx.send("No lewd stuff here lewdass")
-	
+    choose = random.choice(nrop)
+    if ctx.channel.id == (850035525200773130):
+        await ctx.send(choose)
+    else:
+        await ctx.send("This command is not allowed here.")
 	
 
 @client.command()
