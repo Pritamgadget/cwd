@@ -220,9 +220,7 @@ async def on_message(message):
 @client.command()
 async def porn(ctx):
 	choose = random.choice(nrop)
-	emb = discord.Embed(title='Porn')
-        emb.set_image(url = f'{choose}')
-        await ctx.send (embed = emb)
+        await ctx.send(choose)
 	
 	
 
