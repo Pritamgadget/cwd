@@ -141,9 +141,10 @@ async def porn(ctx):
 	}
 
         response = requests.request("GET", url, headers=headers)
-        await ctx.send(response.text)
+	x = print(response.text)
+        await ctx.send(response)
 
-print(response.text)
+
 	
 @client.command()
 async def advice(ctx):
