@@ -141,7 +141,6 @@ async def porn(ctx):
 	}
 
         response = requests.request("GET", url, headers=headers)
-	x = print(response.text)
         await ctx.send(response)
 
 
