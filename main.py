@@ -288,7 +288,25 @@ async def wyr(ctx, id):
     embed = discord.Embed(color = 0x2ecc71, title = "Would You Rather", description = str(x))
     await ctx.send(content = None, embed = embed)
 
+@client.command()
+async def zoo(ctx):
+    url = f"https://zoo-animal-api.herokuapp.com/animals/rand"
+
+    r = requests.get(url)
+    t = json.dumps(r.json())
+    l = json.loads(json.dumps(r.json()))
+    print(l.keys())
+    print(l["name"])
+    embed = discord.Embed(color = 0x2ecc71, title = l["name"], description = (f"**Habitat**: {l['habitat']}"))
+    embed.set_author(name = f'Virtual Zoo')
+    embed.set_image(url=l["image_link"])
+    embed.add_field(name = "Lifespan", value = l["lifespan"])
+    embed.add_field(name = "Animal Type", value = l["animal_type"])
+    embed.add_field(name = "Geo Range", value = l["geo_range"])
+    embed.add_field(name = "Weight", value = f"Min. {l['weight_min']}, Max. {l['weight_max']}")
+    embed.add_field(name = "Diet", value = l["diet"])
     
+    await ctx.send(content = None, embed = embed)   
 
 @client.command()
 async def wordplay(ctx):
