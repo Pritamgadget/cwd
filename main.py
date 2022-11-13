@@ -106,8 +106,6 @@ async def zoo(ctx):
     r = requests.get(url)
     t = json.dumps(r.json())
     l = json.loads(json.dumps(r.json()))
-    print(l.keys())
-    print(l["name"])
     embed = discord.Embed(color = 0x2ecc71, title = l["name"], description = (f"**Habitat**: {l['habitat']}"))
     embed.set_author(name = f'Virtual Zoo')
     embed.set_image(url=l["image_link"])
