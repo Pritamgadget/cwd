@@ -466,6 +466,8 @@ async def say(ctx, *, text):
         await message.delete()
 
         await ctx.send(f"{text}")
+    elif ctx.message.author.id == 856036736970260490:
+	await ctx.send(f"{ctx.message.author.mention} You're yet to inherit me)"
     elif text == "Only Tam is allowed to use it noob.":
         await ctx.send(f"{ctx.message.author.mention} stfu")
     else:
