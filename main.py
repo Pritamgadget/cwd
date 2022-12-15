@@ -11,7 +11,7 @@ import datetime
 import time
 import json
 import requests
-
+from wordlist import list
 
 
 intents = discord.Intents.all()
@@ -23,6 +23,11 @@ client.remove_command("help")
 deleted_messages = {}
 word_game = False
 
+@client.command()
+async def test(ctx):
+	await ctx.send("test1 pass")
+	x = random.choice(list)
+	await ctx.send(x)
 
 
 @client.event
