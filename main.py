@@ -28,7 +28,26 @@ class Bot(commands.Bot):
 
 bot = Bot()
 
+@bot.command()
+async def a(ctx, *, action):
+        apikey = "CILQHG8K57C7"  
+        lmt = 1
+        search_term = action.split()[0]
+        r = requests.get(
+            "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search_term, apikey, lmt))
+        if r.status_code == 200:
+            top_8gifs = json.loads(r.content)
+            y = list(filter(lambda x: ("http" and ".gif" in x), ((str(top_8gifs['results'])).replace("'", "#")).replace(",", "#").split("#")))
+            top_8gifs = y
+        else:
+            top_8gifs = None
+        await ctx.send(top_8gifs[0])
 
+@bot.command()
+async def choose(ctx,*,arg):
+	chosen = random.choice(arg.split)
+	await ctx.send(chosen)
+	
 @bot.event
 async def on_message(message):
   channel = bot.get_channel(904434928303882251)
