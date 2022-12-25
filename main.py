@@ -49,9 +49,16 @@ winlist2 = [
 
 @bot.hybrid_command(name = "8ball", with_app_command = True, description = "8ball")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
-async def ball(ctx, *question):
+async def ball(ctx, *,question):
   winlistx = random.choice(winlist2)
   await ctx.send(winlistx)
+	
+@bot.hybrid_command(name = "pick", with_app_command = True, description = "randomly pick items from list")
+@app_commands.guilds(discord.Object(id = 819630334491754547))
+async def ball(ctx, num, items):
+	items = item.split()
+	choose = random.choice(items, num)
+	await ctx.send("choose")
 
 class fetch_emoji(discord.ui.View):
     def __init__(self, emojicontent, *, timeout=30, ):
@@ -185,63 +192,6 @@ async def dm(ctx, *, message_and_mentions = None):
                 pass
                 await ctx.send("Message wasn't sent to a User")
 
-@bot.hybrid_command(name = "test", with_app_command = True, description = "Testing")
-@app_commands.guilds(discord.Object(id = 819630334491754547))
-@commands.has_permissions(administrator = True)
-async def test(ctx: commands.Context):
-    await ctx.defer(ephemeral = True)
-    await ctx.reply("hi!")
-
-@bot.hybrid_command(name = "zoo", with_app_command = True, description = "Get info on a random zoo animal")
-@app_commands.guilds(discord.Object(id = 819630334491754547))
-@commands.has_permissions(administrator = True)
-async def zoo(ctx):
-    url = f"https://zoo-animal-api.herokuapp.com/animals/rand"
-
-    r = requests.get(url)
-    t = json.dumps(r.json())
-    print(t)
-    l = json.loads(json.dumps(r.json()))
-    print(l)
-    embed = discord.Embed(color = 0x2ecc71, title = l["name"], description = (f"**Habitat**: {l['habitat']}"))
-    embed.set_author(name = f'Virtual Zoo')
-    embed.set_image(url=l["image_link"])
-    embed.add_field(name = "Lifespan", value = l["lifespan"])
-    embed.add_field(name = "Animal Type", value = l["animal_type"])
-    embed.add_field(name = "Geo Range", value = l["geo_range"])
-    embed.add_field(name = "Weight", value = f"Min. {l['weight_min']}, Max. {l['weight_max']}")
-    embed.add_field(name = "Diet", value = l["diet"])
-    
-    await ctx.send(content = None, embed = embed)   
-
-    
-    x = f'https://cdn.discordapp.com/emojis/{res}.gif'
-    y1 = x.replace("['", "")
-    y2 = y1.replace("']", "")
-    print(y2)
-    r = requests.head(f'{y2}')
-    rep = r.status_code
-    print(rep)
-
-    if rep != 200 :
-        png = y2.replace(".gif", ".png")
-        r2 = requests.head(f'{png}')
-        rep2 = r2.status_code
-        print(rep2)
-        if rep2 == 200:
-
-            emb = discord.Embed(title='Emoji')
-            emb.set_image(url = f'{png}')
-            await ctx.send (embed = emb)
-        else: 
-            jpeg = png.replace(".png", "jpg")
-            emb = discord.Embed(title='Emoji')
-            emb.set_image(url = f'{jpeg}')
-            await ctx.send (embed = emb)  
-    else:
-         emb = discord.Embed(title='Emoji')
-         emb.set_image(url = f'{y2}')
-         await ctx.send (embed = emb)
 
 @bot.hybrid_command(name = "advice", with_app_command = True, description = "Get a Random Advice")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
