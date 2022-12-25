@@ -393,8 +393,8 @@ word_game = False
 
 @bot.hybrid_command(name = "reminder", with_app_command = True, description = "0h 0m")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
-async def rem(ctx,*, #h_#m):
- args = #h_#m
+async def rem(ctx,*, h_m):
+ args = h_m
  user = ctx.author
  message = "in".join(args.split("in")[:-1])
  args = args.split(" in ")[-1]
