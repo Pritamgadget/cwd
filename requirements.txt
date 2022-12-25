@@ -1,4 +1,4 @@
-discord.py 
+discord.py==2.1.0
 asyncio
 googletrans==4.0.0rc1
 giphy_client==1.0.0
