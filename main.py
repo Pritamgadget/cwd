@@ -20,7 +20,7 @@ client = discord.Client(intents=intents)
 
 class Bot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=['pls ', 'Pls ', 'p', 'P', 'p ', 'P ', 'Pls'], intents = intents)
+        super().__init__(command_prefix=['pls ', 'Pls '], intents = intents)
 
     async def setup_hook(self):
         await self.tree.sync(guild = discord.Object(id = 819630334491754547))
