@@ -44,9 +44,8 @@ async def a(ctx, *, action):
         await ctx.send(top_8gifs[0])
 
 @bot.command()
-async def choose(ctx,*,arg):
-	chosen = random.choice(arg.split)
-	await ctx.send(chosen)
+    chosen = random.choice(arg.split())
+    await ctx.send(chosen)
 	
 @bot.event
 async def on_message(message):
