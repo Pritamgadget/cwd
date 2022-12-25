@@ -49,7 +49,7 @@ winlist2 = [
 
 @bot.hybrid_command(name = "8ball", with_app_command = True, description = "8ball")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
-async def 8ball(ctx, *question):
+async def ball(ctx, *question):
   winlistx = random.choice(winlist2)
   await ctx.send(winlistx)
 
