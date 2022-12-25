@@ -446,7 +446,7 @@ async def on_message_delete(message):
     global deleted_messages
     deleted_messages[message.channel.id] = {'author': message.author.name+'#'+message.author.discriminator, 'content': message.content, 'avatar_url': message.author.avatar_url}
 
-@bot.hybrid_command(name = "snipe", with_app_command = True, description = "Snipe last deleted message")
+@bot.hybrid_command(name = "snipe", with_app_command = True, description = "Snipe last deleted message", aliases=["s"])
 @app_commands.guilds(discord.Object(id = 819630334491754547))
 async def snipe(ctx):
     global deleted_messages
@@ -473,7 +473,7 @@ async def on_message_edit(before, after):
     new[after.channel.id] = after.content
     author[after.channel.id] = after.author.name
 
-@bot.hybrid_command(name = "snipe_edit", with_app_command = True, description = "Snipe last edited message")
+@bot.hybrid_command(name = "snipe_edit", with_app_command = True, description = "Snipe last edited message", aliases=["se"])
 @app_commands.guilds(discord.Object(id = 819630334491754547))
 async def snipeedit(ctx):
     if ctx.message.channel.id in new:
