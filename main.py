@@ -11,68 +11,241 @@ import datetime
 import time
 import json
 import requests
-from wordlist import list
-from itemlist import items
-
+from discord.ext import commands
+from discord import app_commands
+from wordlist import list_of_word
 
 intents = discord.Intents.all()
-intents.members = True
-client=commands.Bot(command_prefix=['pls ', 'Pls ', 'p', 'P', 'p ', 'P ', 'Pls'], intents = intents)
-client.remove_command("help")
+client = discord.Client(intents=intents)
+
+class Bot(commands.Bot):
+    def __init__(self):
+        super().__init__(command_prefix = "?", intents = intents)
+
+    async def setup_hook(self):
+        await self.tree.sync(guild = discord.Object(id = 768122870642507826))
+        print(f"Synced slash commands for {self.user}.")
+    
+    async def on_command_error(self, ctx, error):
+        await ctx.reply(error, ephemeral = True)
+
+bot = Bot()
 
 
-deleted_messages = {}
-word_game = False
-
-@client.command()
-async def test(ctx):
-	await ctx.send("test1 pass")
-	x = random.choice(list)
-	await ctx.send(x)
-
-
-@client.event
+@bot.event
 async def on_message(message):
-  channel = client.get_channel(904434928303882251)
+  channel = bot.get_channel(904434928303882251)
   embed=discord.Embed(colour=discord.Colour.gold())
   embed.set_author(name=f"User Info ~ {message.author}")
   embed.add_field(name="Message: ", value=message.content, inline=False)
-  if message.author != client.user and message.channel == message.author.dm_channel:
+  if message.author != bot.user and message.channel == message.author.dm_channel:
         await channel.send(embed=embed)
         
-  await client.process_commands(message)
+  await bot.process_commands(message)
 
-	
+winlist2 = [
+  'Yes',
+  'No', 'Maybe', 'Yes Daddy', 'Yes Mommy', 'Possibly', "We'll never know", 'You Wish', "Even I can't answer that", 'Never' ]
 
-@client.command()
-async def token(ctx, member: discord.Member):
-    list = ["Blued", "Yellowed"]
-    user = ctx.author
-    servant = range(1, 60)
-    pick = random.choice(servant)
-    tokens = random.choice(list)
-    print(pick, tokens)
-    print(member)
-    if user is member :
-        await ctx.send(f"Can't token yourself Pleb")
+@bot.hybrid_command(name = "8ball", with_app_command = True, description = "8ball")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def 8ball(ctx, *question):
+  winlistx = random.choice(winlist2)
+  await ctx.send(winlistx)
 
+class fetch_emoji(discord.ui.View):
+    def __init__(self, emojicontent, *, timeout=30, ):
+        super().__init__(timeout=timeout)
+        self.name = 1
+        all_int = ":0123456789><"
+        final_fix_bruh = ("".join(list(filter(lambda x:x in all_int, emojicontent))).replace("<", ":").replace(">",":").split(":"))
+        filter_content = [ele for ele in final_fix_bruh if ele.strip()]
+        filter_content_final = [x for x in filter_content if "@" not in x]
+        self.emojis_main = [item for item in filter_content_final if (len(item)) > 6]
+    @discord.ui.button(label="Next Emoji",style=discord.ButtonStyle.green)
+    async def gray_button(self,interaction:discord.Interaction,button:discord.ui.Button):
+        self.default_ext = ".gif"
+        url = f"https://cdn.discordapp.com/emojis/{self.emojis_main[self.name]}{self.default_ext}"
+        url_check = requests.head(url).status_code
+        print(url_check)
+        if url_check != 200:
+           self.default_ext =  ".png"
+        elif url_check != 200:
+                self.default_ext = ".jpg"
+        else:
+                pass
+        
+        embed = discord.Embed(title = "Stolen Emojis", color = discord.Colour.red())
+        url = f"https://cdn.discordapp.com/emojis/{self.emojis_main[self.name]}{self.default_ext}"
+        embed.set_image(url = url)
+        embed.set_footer(text=f"Emojis: {self.name + 1}/{len(self.emojis_main)}") 
+        print(url)
+        await interaction.response.edit_message(embed = embed)
+        if  self.name == (len(self.emojis_main) - 1):
+            self.name = 0
+        else:
+            self.name = self.name + 1
+
+@bot.hybrid_command(name = "semoji", with_app_command = True, description = "Steal emojis with message ID")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def semoji(ctx, msg_id):
+    msg = await ctx.fetch_message(msg_id)
+    content_of_mssg = msg.content
+    ext_check = ".gif"
+    all_int = ":0123456789><@"
+    final_fix_bruh = ("".join(list(filter(lambda x:x in all_int, content_of_mssg))).replace("<", ":").replace(">",":").split(":"))
+    filter_content = [ele for ele in final_fix_bruh if ele.strip()]
+    filter_content_final = [x for x in filter_content if "@" not in x]
+    emojis_main = [item for item in filter_content_final if (len(item)) > 6]
+    url = f"https://cdn.discordapp.com/emojis/{emojis_main[0]}{ext_check}"
+    url_check_def = requests.head(url).status_code
+    print(url_check_def)
+    if url_check_def != 200:
+        ext_check = ".png"
+    elif url_check_def != 200:
+        ext_check = ".jpg"
     else:
-        await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
+        print("passed conditions")
+        pass
+    url = f"https://cdn.discordapp.com/emojis/{emojis_main[0]}{ext_check}"
+    embed = discord.Embed(title = "Stolen Emojis", color = discord.Colour.red())
+    embed.set_footer(text=f"Emoji: 1/{len(emojis_main)}") 
+    embed.set_image(url = url)
+    if len(emojis_main) == 1 :
+        await ctx.send(embed = embed)
+        print(url)
+    else:
+        await ctx.send(embed = embed, view=fetch_emoji(emojicontent=content_of_mssg))
 
-@client.command()
-async def fact(ctx):
-    url = "https://uselessfacts.jsph.pl/random.json?language=en"
+@bot.hybrid_command(name = "urban", with_app_command = True, description = "Check definiton in urban DIctionary")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def urban(ctx, *msg):
+
+        word = ' '.join(msg)
+        api = "http://api.urbandictionary.com/v0/define"
+        # Send request to the Urban Dictionary API and grab info
+        response = requests.get(api, params=[("term", word)]).json()
+        embed = discord.Embed(description="No results found!", colour=0xFF0000)
+        if len(response["list"]) == 0:
+            return await ctx.send(embed=embed)
+        # Add results to the embed
+        embed = discord.Embed(title="Word", description=word, colour=embed.colour)
+        embed.add_field(name="Top definition:", value=response['list'][0]['definition'])
+        embed.add_field(name="Examples:", value=response['list'][0]['example'])
+        await ctx.send(embed=embed)
+
+@bot.hybrid_command(name = "dm", with_app_command = True, description = "Dm")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+@commands.has_permissions(administrator = True)
+async def dm(ctx, *, message_and_mentions = None):
+    message = None
+    mentions = None
+    message_and_mentions = message_and_mentions.split(" ")
+    message_starting_index = None
+    for text_index in range(len(message_and_mentions)):
+        if not re.match("\<\@\!?\d*\>|\<\@\&?\d*\>", message_and_mentions[text_index]):
+            message_starting_index = text_index
+            break
+    if message_starting_index is None:
+        message_starting_index = len(message_and_mentions)
+        message = "This message is sent by " + ctx.author.name
+    else:
+        message = " ".join(message_and_mentions[message_starting_index:])
+    await ctx.defer(ephemeral = True)
+    if message_starting_index != 0:
+        mentions = []
+        for mention in message_and_mentions[:message_starting_index]:
+            string_mentions = re.findall("\<\@\!?\d*\>|\<\@\&?\d*\>", mention)
+            if string_mentions:
+                for mention in string_mentions:
+                    print(string_mentions)
+                    id = ""; i = 0
+                    while i < len(mention):
+                        if mention[i].isdigit():
+                            id += mention[i]
+                        i += 1
+                    mentions.append(int(id))
+                    await ctx.send("Message Sent!")
+        users = []
+        for id in mentions:
+            user = ctx.message.guild.get_member(id)
+            role = ctx.message.guild.get_role(id)
+            if user:
+                if user not in users:
+                    users.append(user)
+            elif role:
+                for member in ctx.guild.members:
+                    if role in member.roles:
+                        if member not in users:
+                            users.append(member)
+        for user in users:
+            try:
+                await user.send(message)
+            except:
+                pass
+                await ctx.send("Message wasn't sent to a User")
+
+@bot.hybrid_command(name = "test", with_app_command = True, description = "Testing")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+@commands.has_permissions(administrator = True)
+async def test(ctx: commands.Context):
+    await ctx.defer(ephemeral = True)
+    await ctx.reply("hi!")
+
+@bot.hybrid_command(name = "zoo", with_app_command = True, description = "Get info on a random zoo animal")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+@commands.has_permissions(administrator = True)
+async def zoo(ctx):
+    url = f"https://zoo-animal-api.herokuapp.com/animals/rand"
+
     r = requests.get(url)
+    t = json.dumps(r.json())
+    print(t)
     l = json.loads(json.dumps(r.json()))
-    fact = (l['text'])
-    embed = discord.Embed(color = 0x2ecc71, title = "Random Fact", description = str(fact))
-    await ctx.send(content = None, embed = embed)
-	
+    print(l)
+    embed = discord.Embed(color = 0x2ecc71, title = l["name"], description = (f"**Habitat**: {l['habitat']}"))
+    embed.set_author(name = f'Virtual Zoo')
+    embed.set_image(url=l["image_link"])
+    embed.add_field(name = "Lifespan", value = l["lifespan"])
+    embed.add_field(name = "Animal Type", value = l["animal_type"])
+    embed.add_field(name = "Geo Range", value = l["geo_range"])
+    embed.add_field(name = "Weight", value = f"Min. {l['weight_min']}, Max. {l['weight_max']}")
+    embed.add_field(name = "Diet", value = l["diet"])
+    
+    await ctx.send(content = None, embed = embed)   
 
+    
+    x = f'https://cdn.discordapp.com/emojis/{res}.gif'
+    y1 = x.replace("['", "")
+    y2 = y1.replace("']", "")
+    print(y2)
+    r = requests.head(f'{y2}')
+    rep = r.status_code
+    print(rep)
 
+    if rep != 200 :
+        png = y2.replace(".gif", ".png")
+        r2 = requests.head(f'{png}')
+        rep2 = r2.status_code
+        print(rep2)
+        if rep2 == 200:
 
-	
-@client.command()
+            emb = discord.Embed(title='Emoji')
+            emb.set_image(url = f'{png}')
+            await ctx.send (embed = emb)
+        else: 
+            jpeg = png.replace(".png", "jpg")
+            emb = discord.Embed(title='Emoji')
+            emb.set_image(url = f'{jpeg}')
+            await ctx.send (embed = emb)  
+    else:
+         emb = discord.Embed(title='Emoji')
+         emb.set_image(url = f'{y2}')
+         await ctx.send (embed = emb)
+
+@bot.hybrid_command(name = "advice", with_app_command = True, description = "Get a Random Advice")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+@commands.has_permissions(administrator = True)
 async def advice(ctx):
     url = "https://api.adviceslip.com/advice"
     r = requests.get(url)
@@ -86,50 +259,55 @@ async def advice(ctx):
     advice = advice.replace("}", "")
     embed = discord.Embed(color = 0x2ecc71, title = "Random Advice", description = str(advice))
     await ctx.send(content = None, embed = embed)
-    
-@client.command()
-async def wyr(ctx, id):
 
+@bot.hybrid_command(name = "token", with_app_command = True, description = "tokening")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def token(ctx, member: discord.Member):
+    list = ["Blued", "Yellowed"]
+    user = ctx.author
+    servant = range(1, 60)
+    pick = random.choice(servant)
+    tokens = random.choice(list)
+    print(pick, tokens)
+    print(member)
+    if user == member :
+        await ctx.send(f"Can't token yourself Pleb")
 
-    url = f"https://would-you-rather-api.abaanshanid.repl.co/?id={id}"
+    else:
+        await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
+@bot.hybrid_command(name = "calc", with_app_command = True, description = "calculation")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def calc(ctx, arg):
+    y = eval(arg)
+    await ctx.defer(ephemeral = True)
+    await ctx.send(y)
+
+@bot.hybrid_command(name = "fact", with_app_command = True, description = "Get Random Facts")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def fact(ctx):
+    url = "https://uselessfacts.jsph.pl/random.json?language=en"
     r = requests.get(url)
-    t = json.dumps(r.json())
     l = json.loads(json.dumps(r.json()))
-    x = l.values()
-    x = str(x)
-    x = x.split(",")[-1]
-    x = x.replace("]", "")
-    x = x.replace(")", "")
-    print(x)
-    embed = discord.Embed(color = 0x2ecc71, title = "Would You Rather", description = str(x))
+    fact = (l['text'])
+    embed = discord.Embed(color = 0x2ecc71, title = "Random Fact", description = str(fact))
     await ctx.send(content = None, embed = embed)
+	
 
-@client.command()
-async def zoo(ctx):
-    url = f"https://zoo-animal-api.herokuapp.com/animals/rand"
+app_id = 'f1b477f2'
+app_key = '2fd4ee4cbe6f6751b878c82559aee353'
+language = 'en-us'
+fields = 'definitions'
 
-    r = requests.get(url)
-    t = json.dumps(r.json())
-    l = json.loads(json.dumps(r.json()))
-    embed = discord.Embed(color = 0x2ecc71, title = l["name"], description = (f"**Habitat**: {l['habitat']}"))
-    embed.set_author(name = f'Virtual Zoo')
-    embed.set_image(url=l["image_link"])
-    embed.add_field(name = "Lifespan", value = l["lifespan"])
-    embed.add_field(name = "Animal Type", value = l["animal_type"])
-    embed.add_field(name = "Geo Range", value = l["geo_range"])
-    embed.add_field(name = "Weight", value = f"Min. {l['weight_min']}, Max. {l['weight_max']}")
-    embed.add_field(name = "Diet", value = l["diet"])
-    
-    await ctx.send(content = None, embed = embed)   
-
-@client.command()
+word_game = False
+@bot.hybrid_command(name = "wordplay", with_app_command = True, description = "WordPlay Game")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
 async def wordplay(ctx):
   global word_game
   if word_game == False:
     word_game = True
     while (word_game==True):
-      choose_a_word = random.choice(list1)
+      choose_a_word = random.choice(list_of_word)
       print(choose_a_word)
       lst = [x for x in choose_a_word]
       if len(choose_a_word) <= 3 :
@@ -183,7 +361,7 @@ async def wordplay(ctx):
                 emb.add_field(name = 'Word is: ', value = f'{items}', inline = False)
                 await ctx.send(embed = emb)
       try:
-                msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 10)
+                msg = await bot.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 10)
                 await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
       except asyncio.TimeoutError:
             try:
@@ -197,7 +375,7 @@ async def wordplay(ctx):
             except KeyError:
                 await ctx.send("**No Hint found in Oxford Dictionary**")
             try:
-                 msg = await client.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 20)
+                 msg = await bot.wait_for('message', check = lambda x: f"{choose_a_word}" in x.content.lower(), timeout = 20)
                  await msg.channel.send(f"{msg.author.mention}, That's correct, The word was **__{choose_a_word.upper()}__**")
             except asyncio.TimeoutError:
                     await ctx.send(f"You're out of time, The word was **__{choose_a_word.upper()}__**")
@@ -211,70 +389,12 @@ async def wordplay(ctx):
     word_game = False
     await ctx.send("**Word game has stopped**")
 
-        
+word_game = False
 
-@client.command()
-async def calc(ctx, arg):
-    y = eval(arg)
-    await ctx.send(y)
-  
-@client.command()
-async def rate(ctx, *args):
-  list = ["Libby is ugly", "Ugly ass Libby", "Libby at peak of ugliness"]
-  cont = random.choice(list)
-  await ctx.send(cont)
-  
-  
-@client.command(aliases=['emo', 'e'])
-async def emoji(ctx, msgID): 
-
-    msg = await ctx.fetch_message(msgID)
-    x = msg.content
-    temp = re.findall(r'\d+', x)
-    res = list(map(int, temp))
-    
-    x = f'https://cdn.discordapp.com/emojis/{res}.gif'
-    y1 = x.replace("[", "")
-    y2 = y1.replace("]", "")
-    r = requests.head(f'{y2}')
-    rep = r.status_code
-
-    if rep != 200 :
-        png = y2.replace(".gif", ".png")
-        r2 = requests.head(f'{png}')
-        rep2 = r2.status_code
-        if rep2 == 200:
-
-            emb = discord.Embed(title='Emoji')
-            emb.set_image(url = f'{png}')
-            await ctx.send (embed = emb)
-        else: 
-            jpeg = png.replace(".png", "jpg")
-            emb = discord.Embed(title='Emoji')
-            emb.set_image(url = f'{jpeg}')
-            await ctx.send (embed = emb)  
-    else:
-         emb = discord.Embed(title='Emoji')
-         emb.set_image(url = f'{y2}')
-         await ctx.send (embed = emb)
-
-@client.command()
-async def steal(ctx,*, member: discord.Member):
-    list1 = f"{ctx.author.mention} tried to steal {member.mention}'s luck but failed"
-    list2 = f"{ctx.author.mention} stole {member.mention}'s Good luck"
-    list22 = f"{ctx.author.mention} stole {member.mention}'s Bad luck"
-    list3 = f"{ctx.author.mention} stole {member.mention}'s luck, Not sure Good or Bad"
-    lists = [list1, list2, list3, list22]
-    choose = random.choice(lists)
-    if member is ctx.author :
-        await ctx.send("No need to steal your own luck noob")
-    elif ctx.author is 705116051024773213 :
-        await ctx.send(f"Can't steal Creator's Luck")
-    else:
-      await ctx.send(choose)
-  
-@client.command(aliases=['rem', 'r', 'remind'])
-async def reminder(ctx,*, args):
+@bot.hybrid_command(name = "reminder", with_app_command = True, description = "0h 0m")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def rem(ctx,*, #h_#m):
+ args = #h_#m
  user = ctx.author
  message = "in".join(args.split("in")[:-1])
  args = args.split(" in ")[-1]
@@ -315,157 +435,15 @@ async def reminder(ctx,*, args):
  else:
     await ctx.send("Use Correct Format: Pls rem (message) in (0)h (0)m")
 
-  
-@client.command()
+@bot.hybrid_command(name = "avatar", with_app_command = True, description = "Check avatar of a Guild Member")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
 async def avatar(ctx, *, member: discord.Member=None):
     if not member: 
         member = ctx.message.author # set member as the author
     userAvatar = member.avatar_url
     await ctx.send(userAvatar)
-    
-        
-@client.command(aliases=['st'])    
-@commands.has_any_role('Vice Leader', 'Elder', 'Emperor Lord', 'Tao Lord')
-async def secttrade(ctx, time):
-    time_in_minutes = int(time)
-    time_in_sec = time_in_minutes*60
-    print(time_in_sec)
 
-    await ctx.send("Sect Trade feed has started")
-    await asyncio.sleep(time_in_sec)
-
-    try:
-        while True:
-            await asyncio.sleep(10800) 
-            await ctx.send (f"<@&939054218763972669> : Stocks will refresh in 5 mins. " )
-    except KeyboardInterrupt:
-        print('\n')
-
-
-@client.command(aliases=['Dm', 'DM'])
-@commands.has_any_role('Vice Leader', 'Elder', 'Emperor Lord', 'Tao Lord')
-async def dm(ctx, *, message_and_mentions = None):
-    message = None
-    mentions = None
-    message_and_mentions = message_and_mentions.split(" ")
-    message_starting_index = None
-    #for separating mentions and messages
-    for text_index in range(len(message_and_mentions)):
-        if not re.match("\<\@\!?\d*\>|\<\@\&?\d*\>", message_and_mentions[text_index]):
-            message_starting_index = text_index
-            break
-    if message_starting_index is None:
-        message_starting_index = len(message_and_mentions)
-        message = "This message is sent by " + ctx.author.name
-    else:
-        message = " ".join(message_and_mentions[message_starting_index:])
-    #if there are mentions in the command
-    if message_starting_index != 0:
-        mentions = []
-        for mention in message_and_mentions[:message_starting_index]:
-            string_mentions = re.findall("\<\@\!?\d*\>|\<\@\&?\d*\>", mention)
-            if string_mentions:
-                for mention in string_mentions:
-                    print(string_mentions)
-                    id = ""; i = 0
-                    while i < len(mention):
-                        if mention[i].isdigit():
-                            id += mention[i]
-                        i += 1
-                    mentions.append(int(id))
-                    await ctx.send("Message Sent!")
-        users = []
-        for id in mentions:
-            user = ctx.message.guild.get_member(id)
-            role = ctx.message.guild.get_role(id)
-            if user:
-                if user not in users:
-                    users.append(user)
-            elif role:
-                for member in ctx.guild.members:
-                    if role in member.roles:
-                        if member not in users:
-                            users.append(member)
-        for user in users:
-            try:
-                await user.send(message)
-            except:
-                pass
-                await ctx.send("Message wasn't sent to a User")
-              
-    
-app_id = 'f1b477f2'
-app_key = '2fd4ee4cbe6f6751b878c82559aee353'
-language = 'en-us'
-fields = 'definitions'
-
-
-@client.command(aliases=['definee'])
-async def define(ctx, word):
-    words = word
-    print(words)
-    url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + words.lower() + "?fields=" + fields
-    r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
-    t = json.dumps(r.json())
-    l = json.loads(json.dumps(r.json()))
-    f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
-    embed = discord.Embed(colour = discord.Colour.from_rgb(107, 230, 255), title = 'Oxford Dictionary - ' + word, description = str(f))
-    await ctx.send(content = None, embed = embed)
-    
-@client.command()
-@commands.has_any_role('Queen of Hearts', 'Pantheon Members')
-async def stab(ctx,*, member: discord.Member):
-  author_name = ctx.message.author.name
-  
-  embed = discord.Embed(color = discord.Colour.red())
-
-  random_link = random.choice(stabby)
-
-  embed.set_image(url = random_link)
-  await ctx.send (f'{author_name} stabbed {member.mention} ')
-  await ctx.send(embed = embed)
-  
-@client.command()
-@commands.has_any_role('Queen of Hearts', 'Pantheon Members')
-async def spank(ctx,*, member: discord.Member):
-  author_name = ctx.message.author.name
-  
-  embed = discord.Embed(color = discord.Colour.red())
-
-  random_link = random.choice(spanking)
-
-  embed.set_image(url = random_link)
-  await ctx.send (f'{author_name} spanked {member.mention} ')
-  await ctx.send(embed = embed)
-  
-@client.command()
-@commands.has_any_role('Queen of Hearts', 'Pantheon Members')
-async def whip(ctx,*, member: discord.Member):
-  author_name = ctx.message.author.name
-  
-  embed = discord.Embed(color = discord.Colour.red())
-
-  random_link = random.choice(whipping)
-
-  embed.set_image(url = random_link)
-  await ctx.send (f'{author_name} whipped {member.mention} ')
-  await ctx.send(embed = embed)
-
-@client.command()
-@commands.has_any_role('Queen of Hearts', 'Pantheon Members')
-async def skin(ctx,*, member: discord.Member):
-  author_name = ctx.message.author.name
-  
-  embed = discord.Embed(color = discord.Colour.red())
-
-  random_link = random.choice(skinningimg)
-
-  embed.set_image(url = random_link)
-  await ctx.send (f'{author_name} is skinning {member.mention} ')
-  await ctx.send(embed = embed)
-
-
-@client.command()
+@bot.command()
 async def say(ctx, *, text):
     if ctx.message.author.id == 705116051024773213:
         message = ctx.message
@@ -479,232 +457,26 @@ async def say(ctx, *, text):
     else:
         await ctx.send('Only Tam is allowed to use it noob.')
 
+@bot.command()
+async def say(ctx, *, text):
+    if ctx.message.author.id == 705116051024773213:
+        message = ctx.message
+        await message.delete()
 
-  
-#giveaway
-@client.event
+        await ctx.send(f"{text}")
+    elif ctx.message.author.id == 856036736970260490:
+        await ctx.send(f"{ctx.message.author.mention} You're yet to inherit me")
+    elif text == "Only Tam is allowed to use it noob.":
+        await ctx.send(f"{ctx.message.author.mention} stfu")
+    else:
+        await ctx.send('Only Tam is allowed to use it noob.')
+
+@bot.event
 async def on_ready():
-    # Prints a message when the bot is online and functioning
-    await client.change_presence(status=discord.Status.online, activity = discord.Game(name=f'g!helpme for a list of commands! 🥳 🎉 Currently in {len(client.guilds)} servers! 🎉'))
-    print('Ready to giveaway!')
-
-
-@client.command(aliases = ['gw', 'Gw', 'GW', 'gW'])
-async def giveaway(ctx):
-
-    # Stores the questions that the bot will ask the user to answer in the channel that the command was made
-    # Stores the answers for those questions in a different list
-    giveaway_questions = ['Which channel giveaway will be hosted in?', 'Whats the prize?', 'Duration of Giveaway (in seconds)?',]
-    giveaway_answers = []
-
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
-    
-    for question in giveaway_questions:
-        await ctx.send(question)
-        try:
-            message = await client.wait_for('message', timeout= 30.0, check= check)
-        except asyncio.TimeoutError:
-            await ctx.send('You didn\'t answer in time.  Please try again and be sure to send your answer within 30 seconds of the question.')
-            return
-        else:
-            giveaway_answers.append(message.content)
-
-
-    try:
-        c_id = int(giveaway_answers[0][2:-1])
-    except:
-        await ctx.send(f'You failed to mention the channel correctly.  Please do it like this: {ctx.channel.mention}')
-        return
-    
-    channel = client.get_channel(c_id)
-    prize = str(giveaway_answers[1])
-    time = int(giveaway_answers[2])
-
-    await ctx.send(f'The giveaway for {prize} will begin shortly.\nPlease direct your attention to {channel.mention}, this giveaway will end in {time} seconds.')
-
-
-    give = discord.Embed(color = 0x2ecc71)
-    give.set_author(name = f'GIVEAWAY TIME!', icon_url = 'https://i.imgur.com/VaX0pfM.png')
-    give.add_field(name= f'{ctx.author.name} Hosted Giveaway for: {prize}!', value = f'React with 🎉 to enter!\n Ends in {round(time/60, 2)} minutes!', inline = False)
-    end = datetime.datetime.utcnow() + datetime.timedelta(seconds = time)
-    give.set_footer(text = f'Giveaway ends at {end} UTC!')
-    my_message = await channel.send(embed = give)
-    
-    # Reacts to the message
-    await my_message.add_reaction("🎉")
-    await asyncio.sleep(time)
-
-    new_message = await channel.fetch_message(my_message.id)
-
-    # Picks a winner
-    users = await new_message.reactions[0].users().flatten()
-    users.pop(users.index(client.user))
-    winner = random.choice(users)
-
-    winning_announcement = discord.Embed(color = 0xff2424)
-    winning_announcement.set_author(name = f'THE GIVEAWAY HAS ENDED!', icon_url= 'https://i.imgur.com/DDric14.png')
-    winning_announcement.add_field(name = f'🎉 Prize: {prize}', value = f'🥳 **Winner**: {winner.mention}\n 🎫 **Number of Entrants**: {len(users)}', inline = False)
-    winning_announcement.set_footer(text = 'Thanks for entering!')
-    await channel.send(embed = winning_announcement)
-
-
-
-@client.command()
-@commands.has_any_role('Vice Leader')
-async def reroll(ctx, channel: discord.TextChannel, id_ : int):
-	
-    try:
-        new_message = await channel.fetch_message(id_)
-    except:
-        await ctx.send("Incorrect id.")
-        return
-    
-    users = await new_message.reactions[0].users().flatten()
-    users.pop(users.index(client.user))
-    winner = random.choice(users)
-
-    reroll_announcement = discord.Embed(color = 0xff2424)
-    reroll_announcement.set_author(name = f'The giveaway was re-rolled by the host!', icon_url = 'https://i.imgur.com/DDric14.png')
-    reroll_announcement.add_field(name = f'🥳 New Winner:', value = f'{winner.mention}', inline = False)
-    await channel.send(embed = reroll_announcement)
-    
-@client.command(aliases=['choose'])
-async def Choose(ctx, *args):
-  winner = random.choice(args)
-  winlistx = random.choice(winlist)
-  await ctx.send((f'{winlistx} ' '{}  '.format(winner)))
-  
-@client.command(aliases=['Pick'])
-async def pick(ctx, num, *, args):
-    list = args.split()
-    num = int(num)
-    picking = random.sample(list, num)
-    listToStr = ' '.join(map(str, picking))
-    await ctx.send(listToStr)
-  
-@client.command()
-@commands.has_any_role('Vice Leader')
-async def ping(ctx,*, member: discord.Member):
-  author_name = ctx.message.author.name
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-  await ctx.send (f'{author_name} pinged {member.mention}')
-  time.sleep(2)
-
-
-
-@client.command()
-async def help(ctx):
-    em = discord.Embed (
-        title = 'Help : Page 1/3',
-        description = 'Use Pls help <command> for more info on a command',
-        colour = discord.Colour.red())
-    em.add_field(name = "Snipe : [snipe / s]", value = "Snipe last deleted message")
-    em.add_field(name = "Snipe Edit : [snipeedit/se]", value = "Snipe the last edited message")
-    em.add_field(name = "DM : [dm]", value = "Send Direct message to somone/everyone via bot")
-    em.add_field(name = "Poll : [poll]", value = "Make a simpe 'Yes' or 'No' Poll")
-    em.add_field(name = "Choose : [choose] ", value = "Choose one item from a list")
-    em.add_field(name = "Pick : [pick] ", value = "Pick Multiple Items from list")
-    
-    em2 = discord.Embed (
-        title = 'Page 2/3',
-        description = 'Use Pls help <command> for more info on a command',
-        colour = discord.Colour.red())
-    em2.add_field(name = "Translate : [translate / ts]", value = "Translate any text into English")
-    em2.add_field(name = "Giveaway : [Giveaway, gw] ", value = "Do a Giveaway")
-    em2.add_field(name = "8ball : [8ball / 8b] ", value = "Ask your questions")
-    em2.add_field(name = "Oxford Dictionary : [define] ", value = "Use Oxford dictionary to fetch meaning of a word")
-    em2.add_field(name = "Urban Dictionary [urban] ", value = "Use urban dictionary to fetch meaning")
-    em2.add_field(name = "User Info : [info] ", value = "Fetch info a User")
-    
-
-    em3 = discord.Embed (
-        title = 'Page 3/3',
-        description = 'Use Pls help <command> for more info on a command',
-        colour = discord.Colour.red()
-    )
-    em3.add_field(name = "Avatar : [avatar] ", value = "Fetch avatar of a User")
-    em3.add_field(name = "Say : [say] ", value = "Make the bot say what you want to say")
-    em3.add_field(name = "Reminder0 : [reminder/rem/r] ", value = "Set a reminder")
-    em3.add_field(name = "Emoji : [emoji] ", value = "Fetch emoji from any message using message ID")
-    em3.add_field(name = "Token : [token] ", value = "Token plebs including their assistance")
-    em3.add_field(name = "Steal : [steal] ", value = "Steal Other's Luck")
-
-    em4 = discord.Embed (
-        title = 'Page 4/4',
-        description = 'Description',
-        colour = discord.Colour.red()
-    ) 
-    em4.add_field(name = "Action Commands ", value = f"hug, kick, punch, stab, lick \n bye, xyz")
-
-
-    pages = [em, em2, em3, em4]
-
-    message = await ctx.send(embed = em)
-    await message.add_reaction('⏮')
-    await message.add_reaction('◀')
-    await message.add_reaction('▶')
-    await message.add_reaction('⏭')
-
-    def check(reaction, user):
-        return user == ctx.author
-
-    i = 0
-    reaction = None
-
-    while True:
-        if str(reaction) == '⏮':
-            i = 0
-            await message.edit(embed = pages[i])
-        elif str(reaction) == '◀':
-            if i > 0:
-                i -= 1
-                await message.edit(embed = pages[i])
-        elif str(reaction) == '▶':
-            if i < 2:
-                i += 1
-                await message.edit(embed = pages[i])
-        elif str(reaction) == '⏭':
-            i = 2
-            await message.edit(embed = pages[i])
-        
-        try:
-            reaction, user = await client.wait_for('reaction_add', timeout = 30.0, check = check)
-            await message.remove_reaction(reaction, user)
-        except:
-            break
-
-    await message.clear_reactions()
-
-
-@client.command(aliases=['8b', '8ball'])
-async def ball(ctx, *args):
-  winlistx = random.choice(winlist2)
-  await ctx.send(winlistx)
-
-
-@client.command(aliases=['ts'])
+  await bot.change_presence(status=discord.Status.idle, activity=discord.Game('with OwO'))
+ 
+@bot.hybrid_command(name = "translate", with_app_command = True, description = "Translate any message to english", aliases =["ts"])
+@app_commands.guilds(discord.Object(id = 768122870642507826))
 async def translate(ctx, *, inptext = None):
     translator = Translator()
     translated_text = translator.translate(inptext)
@@ -712,268 +484,31 @@ async def translate(ctx, *, inptext = None):
     embed.set_footer(text=f"Source Langauge : '{translated_text.src}'")
     await ctx.send(embed = embed)     
 
-@client.event
-async def on_ready():
-  await client.change_presence(status=discord.Status.idle, activity=discord.Game('with OwO'))
-
-@client.command(aliases=['Poll'])
-async def poll(ctx, *, question=None):
-    if question == None:
-        await ctx.send("Please write a poll!")
- 
-    icon_url = ctx.author.avatar_url 
- 
-    pollEmbed = discord.Embed(title = "Poll", description = f"{question}")
- 
-    pollEmbed.set_footer(text = f"Poll given by {ctx.author}", icon_url = ctx.author.avatar_url)
- 
-    pollEmbed.timestamp = ctx.message.created_at 
- 
-    await ctx.message.delete()
- 
-    poll_msg = await ctx.send(embed = pollEmbed)
- 
-    await poll_msg.add_reaction("✅")
-    await poll_msg.add_reaction("❌")
 
 
-@client.command(aliases=['Pollop'])
-async def pollop(ctx, *, question=None):
-    if question == None:
-        await ctx.send("Please write a poll!")
- 
-    icon_url = ctx.author.avatar_url 
- 
-    pollEmbed = discord.Embed(title = "Poll", description = f"{question}")
- 
-    pollEmbed.set_footer(text = f"Poll given by {ctx.author}", icon_url = ctx.author.avatar_url)
- 
-    pollEmbed.timestamp = ctx.message.created_at 
- 
-    await ctx.message.delete()
- 
-    poll_msg = await ctx.send(embed = pollEmbed)
- 
-    await poll_msg.add_reaction("1️⃣")
-    await poll_msg.add_reaction("2️⃣")
-    await poll_msg.add_reaction("3️⃣")
-    await poll_msg.add_reaction("4️⃣")
-    
-@client.command(aliases=['Hug'])
-async def hug(ctx,*, member: discord.Member, q="hug"):
+@bot.hybrid_command(name = "steal", with_app_command = True, description = "Steal other's Luck")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def steal(ctx,*, member: discord.Member):
+    list1 = f"{ctx.author.mention} tried to steal {member.mention}'s luck but failed"
+    list2 = f"{ctx.author.mention} stole {member.mention}'s Good luck"
+    list22 = f"{ctx.author.mention} stole {member.mention}'s Bad luck"
+    list3 = f"{ctx.author.mention} stole {member.mention}'s luck, Not sure Good or Bad"
+    lists = [list1, list2, list3, list22]
+    choose = random.choice(lists)
+    if member is ctx.author :
+        await ctx.send("No need to steal your own luck noob")
+    elif ctx.author is 705116051024773213 :
+        await ctx.send(f"Can't steal Creator's Luck")
+    else:
+      await ctx.send(choose)
 
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} hugged {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-        
-        
-@client.command(aliases=['Kick'])
-async def kick(ctx,*, member: discord.Member, q="kicked"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='pg')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} kicked {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-@client.command(aliases=['Lick'])
-async def lick(ctx,*, member: discord.Member, q="lick"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} licked {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-@client.command(aliases=['Slap'])
-async def slap(ctx,*, member: discord.Member, q="slapped"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} slapped {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-@client.command(aliases=['Punch'])
-async def punch(ctx,*, member: discord.Member, q="punched"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} punched {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-@client.command(aliases=['Stare'])
-async def stare(ctx,*, member: discord.Member, q="staring"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} is staring at {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-@client.command(aliases=['Kiss'])
-async def kiss(ctx,*, member: discord.Member, q="kiss"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} kissed {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-@client.command(aliases=['Highfive'])
-async def highfive(ctx,*, member: discord.Member, q="highfive"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} gave a highfive to {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-@client.command(aliases=['Bye'])
-async def bye(ctx,*, member: discord.Member, q="bye"):
-
-    api_key="0XFxHlEGR4hUO7RxdHslVuqqmWf5kcRm"
-    api_instance = giphy_client.DefaultApi()
-
-    author_name = ctx.message.author.name
-
-    try: 
-    # Search Endpoint
-        
-        api_response = api_instance.gifs_search_get(api_key, q, limit=50, rating='r')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=q)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.send (f'{author_name} left poor {member.mention}')
-        await ctx.channel.send(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-    
-@client.event
+@bot.event
 async def on_message_delete(message):
     global deleted_messages
     deleted_messages[message.channel.id] = {'author': message.author.name+'#'+message.author.discriminator, 'content': message.content, 'avatar_url': message.author.avatar_url}
 
-@client.command(aliases=['s'])
+@bot.hybrid_command(name = "snipe", with_app_command = True, description = "Snipe last deleted message")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
 async def snipe(ctx):
     global deleted_messages
     if ctx.message.channel.id in deleted_messages:
@@ -988,7 +523,9 @@ old = {}
 new = {}
 author = {}
 
-@client.event
+deleted_messages = {}
+
+@bot.event
 async def on_message_edit(before, after):
     global old
     global new
@@ -997,171 +534,29 @@ async def on_message_edit(before, after):
     new[after.channel.id] = after.content
     author[after.channel.id] = after.author.name
 
-@client.command(aliases=['se'])
+@bot.hybrid_command(name = "snipe_edit", with_app_command = True, description = "Snipe last edited message")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
 async def snipeedit(ctx):
     if ctx.message.channel.id in new:
         embed=discord.Embed(title="",description=f"Before: {old[ctx.message.channel.id]}\nAfter: {new[ctx.message.channel.id]}")    
         #embed.set_author(name="Sniper", icon_url={after.author.avatar_url})
         embed.set_footer(text=f"Message edited by {author[ctx.message.channel.id]}")       
     else:
-
         embed=discord.Embed(title="Sniper",description="No Edit to snipe!")
     await ctx.send(embed=embed)
-   
-@client.command(aliases=['ud'])
-async def urban(ctx, *msg):
 
-        word = ' '.join(msg)
-        api = "http://api.urbandictionary.com/v0/define"
-        # Send request to the Urban Dictionary API and grab info
-        response = requests.get(api, params=[("term", word)]).json()
-        embed = discord.Embed(description="No results found!", colour=0xFF0000)
-        if len(response["list"]) == 0:
-            return await ctx.send(embed=embed)
-        # Add results to the embed
-        embed = discord.Embed(title="Word", description=word, colour=embed.colour)
-        embed.add_field(name="Top definition:", value=response['list'][0]['definition'])
-        embed.add_field(name="Examples:", value=response['list'][0]['example'])
-        await ctx.send(embed=embed)
-
-@client.command(aliases=['user'])
-async def info(ctx, user: discord.Member):
-
-    embed = discord.Embed(title="User profile: " + user.name, colour=user.colour)
-    embed.add_field(name="Name:", value=user.name)
-    embed.add_field(name="ID:", value=user.id)
-    embed.add_field(name="Status:", value=user.status)
-    embed.add_field(name="Highest role:", value=user.top_role)
-    embed.add_field(name="Joined:", value=user.joined_at)
-    embed.set_thumbnail(url=user.avatar_url)
-    await ctx.send(embed=embed)
-    
-
-
-winlist2 = [
-  'Yes',
-  'No', 'Maybe', 'Yes Daddy', 'Yes Mommy', 'Possibly', "We'll never know", 'You Wish', "Even I can't answer that", 'Never' ]
-
-
-stabby = [
-  'https://i.imgur.com/kRuLOci.gif',
-  'https://i.imgur.com/lVC7TRf.gif',
-  'https://i.imgur.com/Pz9RKoE.gif',
-  'https://i.imgur.com/C5pQjXV.gif',
-  'https://i.imgur.com/YZwaY6R.gif',
-  'https://i.imgur.com/e14wXXz.gif',
-  'https://i.imgur.com/3EK5GoA.gif',
-  'https://i.imgur.com/Q7bCnWD.gif',
-  'https://i.imgur.com/VKvweoX.gif',
-  'https://i.imgur.com/5cEn3Ac.gif'
-]
-
-winlist = [
-  'Obviously',
-  'Its',
-  'Duh',
-  'Wot idiot wont choose',
-  'Well since you asked, I choose'
-]
-
-skinningimg = [
-  'https://i.imgur.com/MRSyQCb.gif',
-  'https://i.imgur.com/1IdsgrN.gif',
-  'https://i.imgur.com/CTcQk5Z.gif',
-  'https://media.tenor.com/images/286b710f95472348d8ab72722e10254f/tenor.gif',
-  'https://media.tenor.com/images/cd95cad8b8576b8f7b74e7d412370d57/tenor.gif',
-  'https://media.tenor.com/images/a9cfd5bda83284363a146713fd78b07d/tenor.gif',
-  'https://media.tenor.com/images/ab7b184c4bd43df45e1ffc2ffd5be2bd/tenor.gif'
-]
-
-whipping = [
-  'https://media.tenor.com/images/5b698ada9da22fdfe61368b8ec42333a/tenor.gif',
-  'https://media.tenor.com/images/90c3fa16a281c2c61c75d5a06d4bfdde/tenor.gif',
-  'https://media.tenor.com/images/a981e678b8ffcb5dc46d217d5f4b1e9a/tenor.gif',
-  'https://media.tenor.com/images/208a9d8fd11cbfb13f8ec65957e35078/tenor.gif',
-  'https://media.tenor.com/images/59af8444f20a8232ccf9f03846cf486f/tenor.gif',
-  'https://media.tenor.com/images/a997c2ab11856a0a2dc88caf6fa99759/tenor.gif',
-  'https://media.tenor.com/images/c3450e30a6b1e62040f9c0b37120fb5a/tenor.gif',
-  'https://media.tenor.com/images/d47dc1efbc509174fdd4a748fb8f67fc/tenor.gif'
-]
-
-spanking = [
-  'https://media.tenor.com/images/b54d4d4397f735f9ab75df9a22db269f/tenor.gif',
-  'https://media.tenor.com/images/b01abd857e1065f038d191e891cb9f82/tenor.gif',
-  'https://media.tenor.com/images/594d794a96d3bb76c00d788c611ec6fa/tenor.gif',
-  'https://media.tenor.com/images/8e7fbc4a68e81264e18980cf4f474e64/tenor.gif',
-  'https://media.tenor.com/images/5e053219629f067801802c9f5b807220/tenor.gif',
-  'https://media.tenor.com/images/605c5c945479bd8fcad2448420b285d9/tenor.gif',
-  'https://media.tenor.com/images/5de8e26acdc4cd0b711908911d9dab81/tenor.gif',
-  'https://media.tenor.com/images/99bfa3d20f4491ed75f1080a0408f282/tenor.gif',
-  'https://media.tenor.com/images/28353a2d8bc02fb809cbad7d4f2894a9/tenor.gif'
-]
-
-
-
-pictonary = False
-
-@client.command()
-async def pict(ctx):
-    global pictonary
-    mchannel = client.get_channel(1044338940573929582)
-    if ctx.channel.id == (1044338940573929582):
-        if pictonary == False:
-         pictonary = True
-         while (pictonary==True):
-            url = "https://bing-image-search1.p.rapidapi.com/images/search"
-            headers = {
-                    "X-RapidAPI-Key": "d71b1aba3fmsh2818eec48343a27p1ebe0ajsn2bdb09e0212c",
-                    "X-RapidAPI-Host": "bing-image-search1.p.rapidapi.com"
-                }
-            q = str(random.choice(items)).lower()
-            querystring = {"q":q,"count":"1"}
-            r = requests.get(url, headers=headers, params=querystring)
-            l = json.loads(json.dumps(r.json()))
-            mainstr = ((eval(str(l["value"]).replace("[", "").replace("]", ""))["contentUrl"]))
-            emb1 = discord.Embed()
-            mainlink = emb1.set_image(url=f'{mainstr}')
-            emb2 = discord.Embed(title = "Trap")
-            
-
-            list = [emb2, emb2, emb2, emb2, mainlink]
-            listtostr = random.sample(list, 5)
-            
-
-            c1 =await client.get_channel(1044338183539789935).send(embed = listtostr[0])
-            c2 =await client.get_channel(1044338311679979540).send(embed = listtostr[1])
-            c3 =await client.get_channel(1044338225596088473).send(embed = listtostr[2])
-            c4 =await client.get_channel(1044338416558546975).send(embed = listtostr[3])
-            c5 =await client.get_channel(1044338842137792532).send(embed = listtostr[4])
-            try:
-                    print(q)
-                    msg = await client.wait_for('message', check = lambda x: f"{q}" in x.content.lower(), timeout = 30)
-                    await msg.channel.send(f"{msg.author.mention}, That's correct, It's **__{q.upper()}__**")
-            except asyncio.TimeoutError:
-                    await mchannel.send(f"You're out of time. The word was {q}")
-            if pictonary == False:
-             await asyncio.sleep(7)
-             await c1.delete()
-             await c2.delete()
-             await c3.delete()
-             await c4.delete()
-             await c5.delete()
-             pass
-            else:
-             await ctx.send("Next Picture in 10 seconds")
-             await asyncio.sleep(7)
-             await c1.delete()
-             await c2.delete()
-             await c3.delete()
-             await c4.delete()
-             await c5.delete()
-        else:
-            pictonary = False
-            await ctx.send("Pictonary has stopped")
-            pass
-    else:
-        pass
+@bot.hybrid_command(name = "define", with_app_command = True, description = "Get definition of a Word")
+@app_commands.guilds(discord.Object(id = 768122870642507826))
+async def define(ctx, word):
+    words = word
+    print(words)
+    url = "https://od-api.oxforddictionaries.com/api/v2/entries/" + language + "/" + words.lower() + "?fields=" + fields
+    r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}) 
+    t = json.dumps(r.json())
+    l = json.loads(json.dumps(r.json()))
+    f = l["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
+    embed = discord.Embed(colour = discord.Colour.from_rgb(107, 230, 255), title = 'Oxford Dictionary - ' + word, description = str(f))
+    await ctx.send(content = None, embed = embed)
 
 print("Bot is Online")
-client.run(os.getenv('TOKEN'))
-
+bot.run(os.getenv('TOKEN'))
