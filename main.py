@@ -56,9 +56,11 @@ async def ball(ctx, *,question):
 @bot.hybrid_command(name = "pick", with_app_command = True, description = "randomly pick items from list")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
 async def ball(ctx, num, items):
-	items = item.split()
-	choose = random.choice(items, num)
-	await ctx.send("choose")
+    list = items.split()
+    num = int(num)
+    picking = random.sample(list, num)
+    listToStr = ' '.join(map(str, picking))
+    await ctx.send(listToStr)
 
 class fetch_emoji(discord.ui.View):
     def __init__(self, emojicontent, *, timeout=30, ):
