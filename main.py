@@ -128,7 +128,7 @@ async def semoji(ctx, msg_id):
 
 @bot.hybrid_command(name = "urban", with_app_command = True, description = "Check definiton in urban DIctionary")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
-async def urban(ctx, *msg):
+async def urban(ctx, *,msg):
 
         word = ' '.join(msg)
         api = "http://api.urbandictionary.com/v0/define"
