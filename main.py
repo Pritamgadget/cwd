@@ -23,7 +23,7 @@ class Bot(commands.Bot):
         super().__init__(command_prefix = "?", intents = intents)
 
     async def setup_hook(self):
-        await self.tree.sync(guild = discord.Object(id = 768122870642507826))
+        await self.tree.sync(guild = discord.Object(id = 819630334491754547))
         print(f"Synced slash commands for {self.user}.")
     
     async def on_command_error(self, ctx, error):
@@ -48,7 +48,7 @@ winlist2 = [
   'No', 'Maybe', 'Yes Daddy', 'Yes Mommy', 'Possibly', "We'll never know", 'You Wish', "Even I can't answer that", 'Never' ]
 
 @bot.hybrid_command(name = "8ball", with_app_command = True, description = "8ball")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def 8ball(ctx, *question):
   winlistx = random.choice(winlist2)
   await ctx.send(winlistx)
@@ -87,7 +87,7 @@ class fetch_emoji(discord.ui.View):
             self.name = self.name + 1
 
 @bot.hybrid_command(name = "semoji", with_app_command = True, description = "Steal emojis with message ID")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def semoji(ctx, msg_id):
     msg = await ctx.fetch_message(msg_id)
     content_of_mssg = msg.content
@@ -118,7 +118,7 @@ async def semoji(ctx, msg_id):
         await ctx.send(embed = embed, view=fetch_emoji(emojicontent=content_of_mssg))
 
 @bot.hybrid_command(name = "urban", with_app_command = True, description = "Check definiton in urban DIctionary")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def urban(ctx, *msg):
 
         word = ' '.join(msg)
@@ -135,7 +135,7 @@ async def urban(ctx, *msg):
         await ctx.send(embed=embed)
 
 @bot.hybrid_command(name = "dm", with_app_command = True, description = "Dm")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 @commands.has_permissions(administrator = True)
 async def dm(ctx, *, message_and_mentions = None):
     message = None
@@ -186,14 +186,14 @@ async def dm(ctx, *, message_and_mentions = None):
                 await ctx.send("Message wasn't sent to a User")
 
 @bot.hybrid_command(name = "test", with_app_command = True, description = "Testing")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 @commands.has_permissions(administrator = True)
 async def test(ctx: commands.Context):
     await ctx.defer(ephemeral = True)
     await ctx.reply("hi!")
 
 @bot.hybrid_command(name = "zoo", with_app_command = True, description = "Get info on a random zoo animal")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 @commands.has_permissions(administrator = True)
 async def zoo(ctx):
     url = f"https://zoo-animal-api.herokuapp.com/animals/rand"
@@ -244,7 +244,7 @@ async def zoo(ctx):
          await ctx.send (embed = emb)
 
 @bot.hybrid_command(name = "advice", with_app_command = True, description = "Get a Random Advice")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 @commands.has_permissions(administrator = True)
 async def advice(ctx):
     url = "https://api.adviceslip.com/advice"
@@ -261,7 +261,7 @@ async def advice(ctx):
     await ctx.send(content = None, embed = embed)
 
 @bot.hybrid_command(name = "token", with_app_command = True, description = "tokening")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def token(ctx, member: discord.Member):
     list = ["Blued", "Yellowed"]
     user = ctx.author
@@ -277,14 +277,14 @@ async def token(ctx, member: discord.Member):
         await ctx.send (f"{user.mention} {tokens} {member.mention} and defeated {pick} servants")
 
 @bot.hybrid_command(name = "calc", with_app_command = True, description = "calculation")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def calc(ctx, arg):
     y = eval(arg)
     await ctx.defer(ephemeral = True)
     await ctx.send(y)
 
 @bot.hybrid_command(name = "fact", with_app_command = True, description = "Get Random Facts")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def fact(ctx):
     url = "https://uselessfacts.jsph.pl/random.json?language=en"
     r = requests.get(url)
@@ -301,7 +301,7 @@ fields = 'definitions'
 
 word_game = False
 @bot.hybrid_command(name = "wordplay", with_app_command = True, description = "WordPlay Game")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def wordplay(ctx):
   global word_game
   if word_game == False:
@@ -392,7 +392,7 @@ async def wordplay(ctx):
 word_game = False
 
 @bot.hybrid_command(name = "reminder", with_app_command = True, description = "0h 0m")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def rem(ctx,*, #h_#m):
  args = #h_#m
  user = ctx.author
@@ -436,7 +436,7 @@ async def rem(ctx,*, #h_#m):
     await ctx.send("Use Correct Format: Pls rem (message) in (0)h (0)m")
 
 @bot.hybrid_command(name = "avatar", with_app_command = True, description = "Check avatar of a Guild Member")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def avatar(ctx, *, member: discord.Member=None):
     if not member: 
         member = ctx.message.author # set member as the author
@@ -476,7 +476,7 @@ async def on_ready():
   await bot.change_presence(status=discord.Status.idle, activity=discord.Game('with OwO'))
  
 @bot.hybrid_command(name = "translate", with_app_command = True, description = "Translate any message to english", aliases =["ts"])
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def translate(ctx, *, inptext = None):
     translator = Translator()
     translated_text = translator.translate(inptext)
@@ -487,7 +487,7 @@ async def translate(ctx, *, inptext = None):
 
 
 @bot.hybrid_command(name = "steal", with_app_command = True, description = "Steal other's Luck")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def steal(ctx,*, member: discord.Member):
     list1 = f"{ctx.author.mention} tried to steal {member.mention}'s luck but failed"
     list2 = f"{ctx.author.mention} stole {member.mention}'s Good luck"
@@ -508,7 +508,7 @@ async def on_message_delete(message):
     deleted_messages[message.channel.id] = {'author': message.author.name+'#'+message.author.discriminator, 'content': message.content, 'avatar_url': message.author.avatar_url}
 
 @bot.hybrid_command(name = "snipe", with_app_command = True, description = "Snipe last deleted message")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def snipe(ctx):
     global deleted_messages
     if ctx.message.channel.id in deleted_messages:
@@ -535,7 +535,7 @@ async def on_message_edit(before, after):
     author[after.channel.id] = after.author.name
 
 @bot.hybrid_command(name = "snipe_edit", with_app_command = True, description = "Snipe last edited message")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def snipeedit(ctx):
     if ctx.message.channel.id in new:
         embed=discord.Embed(title="",description=f"Before: {old[ctx.message.channel.id]}\nAfter: {new[ctx.message.channel.id]}")    
@@ -546,7 +546,7 @@ async def snipeedit(ctx):
     await ctx.send(embed=embed)
 
 @bot.hybrid_command(name = "define", with_app_command = True, description = "Get definition of a Word")
-@app_commands.guilds(discord.Object(id = 768122870642507826))
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 async def define(ctx, word):
     words = word
     print(words)
