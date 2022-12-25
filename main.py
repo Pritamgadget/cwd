@@ -25,9 +25,6 @@ class Bot(commands.Bot):
     async def setup_hook(self):
         await self.tree.sync(guild = discord.Object(id = 819630334491754547))
         print(f"Synced slash commands for {self.user}.")
-    
-    async def on_command_error(self, ctx, error):
-		pass
 
 bot = Bot()
 
