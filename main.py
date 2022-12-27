@@ -39,6 +39,7 @@ async def a(ctx, *, action):
             top_8gifs = json.loads(r.content)
             y = list(filter(lambda x: ("http" and ".gif" in x), ((str(top_8gifs['results'])).replace("'", "#")).replace(",", "#").split("#")))
             lista = (y[0], y[5], y[10], y[15], y[20], y[26])
+	    print(lista)
             top_8gifs = random.choice(lista)
 	
         else:
@@ -81,7 +82,7 @@ async def ball(ctx, *,question):
 	
 @bot.hybrid_command(name = "pick", with_app_command = True, description = "randomly pick items from list")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
-async def ball(ctx, num, items):
+async def pick(ctx, num, items):
     list = items.split()
     num = int(num)
     picking = random.sample(list, num)
