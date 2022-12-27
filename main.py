@@ -38,12 +38,12 @@ async def a(ctx, *, action):
         if r.status_code == 200:
             top_8gifs = json.loads(r.content)
             y = list(filter(lambda x: ("http" and ".gif" in x), ((str(top_8gifs['results'])).replace("'", "#")).replace(",", "#").split("#")))
-	    lista = (y[0], y[5], y[10], y[15], y[20], y[26])
+            lista = (y[0], y[5], y[10], y[15], y[20], y[26])
             top_8gifs = random.choice(lista)
 	
         else:
             top_8gifs = None
-        await ctx.send(top_8gifs[0])
+        await ctx.send(top_8gifs)
 
 @bot.command()
 async def choose(ctx,*,arg):
