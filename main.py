@@ -49,6 +49,7 @@ async def choose(ctx,*,arg):
     x = random.choice(arg.split())
     await ctx.send(x)
 
+@bot.hybrid_command(name = "addrole", with_app_command = True, description = "add role")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
 @commands.has_permissions(administrator=True)
 async def addrole(ctx, user: discord.Member, role: discord.Role):
