@@ -31,14 +31,16 @@ bot = Bot()
 @bot.command()
 async def a(ctx, *, action):
         apikey = "CILQHG8K57C7"  
-        lmt = 1
+        lmt = 6
         search_term = action.split()[0]
         r = requests.get(
             "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search_term, apikey, lmt))
         if r.status_code == 200:
             top_8gifs = json.loads(r.content)
             y = list(filter(lambda x: ("http" and ".gif" in x), ((str(top_8gifs['results'])).replace("'", "#")).replace(",", "#").split("#")))
-            top_8gifs = y
+	    lista = (y[0], y[5], y[10], y[15], y[20], y[26])
+            top_8gifs = random.choice(lista)
+	
         else:
             top_8gifs = None
         await ctx.send(top_8gifs[0])
