@@ -121,9 +121,9 @@ class fetch_emoji(discord.ui.View):
         else:
             self.name = self.name + 1
 
-@bot.hybrid_command(name = "semoji", with_app_command = True, description = "Steal emojis with message ID")
+@bot.hybrid_command(name = "emoji", with_app_command = True, description = "Steal emojis with message ID")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
-async def semoji(ctx, msg_id):
+async def emoji(ctx, msg_id):
     msg = await ctx.fetch_message(msg_id)
     content_of_mssg = msg.content
     ext_check = ".gif"
