@@ -49,6 +49,11 @@ async def choose(ctx,*,arg):
     x = random.choice(arg.split())
     await ctx.send(x)
 	
+@bot.command(pass_context=True)
+async def addrole(ctx, user: discord.Member, role: discord.Role):
+    await user.add_roles(role)
+    await ctx.send(f"{role.name} has been given to {user.name}")	
+	
 @bot.event
 async def on_message(message):
   channel = bot.get_channel(904434928303882251)
