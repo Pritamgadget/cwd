@@ -468,7 +468,7 @@ async def steal(ctx,*, member: discord.Member):
 @bot.event
 async def on_message_delete(message):
     global deleted_messages
-    deleted_messages[message.channel.id] = {'author': message.author.name+'#'+message.author.discriminator, 'content': message.content, 'avatar_url': message.author.avatar_url}
+    deleted_messages[message.channel.id] = {'author': message.author.name+'#'+message.author.discriminator, 'content': message.content, 'avatar_url': message.author.avatar}
 
 @bot.hybrid_command(name = "snipe", with_app_command = True, description = "Snipe last deleted message", aliases=["s"])
 @app_commands.guilds(discord.Object(id = 819630334491754547))
