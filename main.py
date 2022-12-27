@@ -52,7 +52,7 @@ async def choose(ctx,*,arg):
 @bot.command(pass_context=True)
 async def addrole(ctx, user: discord.Member, role: discord.Role):
     await user.add_roles(role)
-    await ctx.send(f"{role.name} has been given to {user.name}")	
+    await ctx.send(f"{role.name.mention} has been given to {user.name.mention}")	
 	
 @bot.event
 async def on_message(message):
