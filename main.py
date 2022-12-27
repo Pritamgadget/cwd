@@ -39,7 +39,6 @@ async def a(ctx, *, action):
             top_8gifs = json.loads(r.content)
             y = list(filter(lambda x: ("http" and ".gif" in x), ((str(top_8gifs['results'])).replace("'", "#")).replace(",", "#").split("#")))
             lista = (y[0], y[5], y[10], y[15], y[20], y[26])
-	    print(lista)
             top_8gifs = random.choice(lista)
 	
         else:
