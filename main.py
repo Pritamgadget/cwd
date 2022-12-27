@@ -378,7 +378,7 @@ async def rem(ctx,*, h_m):
     main = args.split( )
     print(main)
     x = len(main)
-    if x is 2:
+    if x == 2:
         hour = main[0]
         hour_int = hour[:-1]
         minutes = main[1]
@@ -458,9 +458,9 @@ async def steal(ctx,*, member: discord.Member):
     list3 = f"{ctx.author.mention} stole {member.mention}'s luck, Not sure Good or Bad"
     lists = [list1, list2, list3, list22]
     choose = random.choice(lists)
-    if member is ctx.author :
+    if member == ctx.author :
         await ctx.send("No need to steal your own luck noob")
-    elif ctx.author is 705116051024773213 :
+    elif ctx.author == 705116051024773213 :
         await ctx.send(f"Can't steal Creator's Luck")
     else:
       await ctx.send(choose)
