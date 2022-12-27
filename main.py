@@ -2,16 +2,11 @@ import discord
 import os
 from discord.ext import commands
 from googletrans import Translator
-import giphy_client
-from giphy_client.rest import ApiException
 import random
 import re
 import asyncio
-import datetime
-import time
 import json
 import requests
-from discord.ext import commands
 from discord import app_commands
 from wordlist import list_of_word
 
