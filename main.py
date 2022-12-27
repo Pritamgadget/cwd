@@ -48,17 +48,12 @@ async def choose(ctx,*,arg):
     print (arg)
     x = random.choice(arg.split())
     await ctx.send(x)
-	
-@app_commands.context_menu()
-async def addrole(ctx, user: discord.Member, role: discord.Role):
-	await user.add_roles(role)
-	await ctx.send(f"{role.name} has been given to {user.mention}", ephemeral=True)
 
-@bot.command(pass_context=True)
+@app_commands.guilds(discord.Object(id = 819630334491754547))
 @commands.has_permissions(administrator=True)
 async def addrole(ctx, user: discord.Member, role: discord.Role):
-    await user.add_roles(role)
-    await ctx.send(f"{role.name} has been given to {user.mention}")	
+	await user.add_roles(role)
+	await ctx.send(f"{role.name} has been given to {user.mention}")
 	
 @bot.event
 async def on_message(message):
