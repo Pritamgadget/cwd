@@ -50,6 +50,7 @@ async def choose(ctx,*,arg):
     await ctx.send(x)
 	
 @bot.command(pass_context=True)
+@commands.has_permissions(administrator=True)
 async def addrole(ctx, user: discord.Member, role: discord.Role):
     await user.add_roles(role)
     await ctx.send(f"{role.name.mention} has been given to {user.name.mention}")	
