@@ -50,9 +50,9 @@ async def choose(ctx,*,arg):
     await ctx.send(x)
 	
 @app_commands.context_menu()
-async def addrole(interaction: discord.Interaction, user: discord.Member, role: discord.Role):
+async def addrole(ctx, user: discord.Member, role: discord.Role):
 	await user.add_roles(role)
-	await interaction.response.send_message(f"{role.name} has been given to {user.mention}", ephemeral=True)
+	await ctx.send(f"{role.name} has been given to {user.mention}", ephemeral=True)
 
 @bot.command(pass_context=True)
 @commands.has_permissions(administrator=True)
