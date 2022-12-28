@@ -151,7 +151,7 @@ async def emoji(ctx, msg_id):
 @app_commands.guilds(discord.Object(id = 819630334491754547))
 async def urban(ctx, *,msg):
 
-        word = ' '.join(msg)
+        word = msg
         api = "http://api.urbandictionary.com/v0/define"
         # Send request to the Urban Dictionary API and grab info
         response = requests.get(api, params=[("term", word)]).json()
