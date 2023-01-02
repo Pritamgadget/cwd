@@ -229,9 +229,9 @@ async def advice(ctx):
     print(l)
     lstr = l
     lstr = str(lstr)
-    advice = lstr.split(":")[-1]
-    advice = advice.replace("}", "")
-    embed = discord.Embed(color = 0x2ecc71, title = "Random Advice", description = str(advice))
+    advices = lstr.split(":")[-1]
+    advices = advices.replace("}", "")
+    embed = discord.Embed(color = 0x2ecc71, title = "Random Advice", description = str(advices))
     await ctx.send(content = None, embed = embed)
 
 @bot.hybrid_command(name = "token", with_app_command = True, description = "tokening")
@@ -240,9 +240,9 @@ async def token(ctx, member: discord.Member):
     list = ["Blued", "Yellowed"]
     user = ctx.author
     servant = range(1, 60)
-    pick = random.choice(servant)
+    picked = random.choice(servant)
     tokens = random.choice(list)
-    print(pick, tokens)
+    print(picked, tokens)
     print(member)
     if user == member :
         await ctx.send(f"Can't token yourself Pleb")
@@ -263,8 +263,8 @@ async def fact(ctx):
     url = "https://uselessfacts.jsph.pl/random.json?language=en"
     r = requests.get(url)
     l = json.loads(json.dumps(r.json()))
-    fact = (l['text'])
-    embed = discord.Embed(color = 0x2ecc71, title = "Random Fact", description = str(fact))
+    fact_m = (l['text'])
+    embed = discord.Embed(color = 0x2ecc71, title = "Random Fact", description = str(fact_m))
     await ctx.send(content = None, embed = embed)
 	
 
