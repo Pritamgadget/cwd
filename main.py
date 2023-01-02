@@ -63,14 +63,8 @@ async def activate(ctx):
 
 @bot.event
 async def on_message(message):
-	global lapiiss
-	if lapiiss == True:
-		if message.author.id == 705116051024773213:
-			await message.add_reaction("😀")
-		else:
-			pass
-	else:
-		pass
+	if message.author.id == 705116051024773213:
+		await message.add_reaction("😀")
 		
 
 @bot.hybrid_command(name = "addrole", with_app_command = True, description = "add role")
