@@ -61,7 +61,7 @@ async def activate(ctx):
 
 @bot.event
 async def on_message(message):
-	global lapiis
+	global lapiiss
 	if lapiiss == True:
 		if message.author.id == 705116051024773213:
 			await message.add_reaction(":lapiis:1059199135217090561")
