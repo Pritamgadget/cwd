@@ -63,6 +63,7 @@ async def activate(ctx):
 
 @bot.event
 async def on_message(message):
+	print(message.author.id)
 	if message.author.id == 705116051024773213:
 		await message.add_reaction("😀")
 		
