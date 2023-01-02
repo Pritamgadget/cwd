@@ -45,27 +45,6 @@ async def choose(ctx,*,arg):
     print (arg)
     x = random.choice(arg.split())
     await ctx.send(x)
-
-lapiiss = False
-
-@bot.command()
-async def activate(ctx):
-	global lapiiss
-	if ctx.author.id == 705116051024773213:
-		if lapiiss == False:
-			lapiiss = True
-			await ctx.send("active")
-		else:
-			lapiis = False
-			await ctx.send("inactive")
-	else:
-		ctx.send("You're not allowed to use it")
-
-@bot.event
-async def on_message(message):
-	print(message.author.id)
-	if message.author.id == 705116051024773213:
-		await message.add_reaction("😀")
 		
 
 @bot.hybrid_command(name = "addrole", with_app_command = True, description = "add role")
