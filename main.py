@@ -54,8 +54,10 @@ async def activate(ctx):
 	if ctx.author.id == 705116051024773213:
 		if lapiiss == False:
 			lapiiss = True
+			await ctx.send("active")
 		else:
 			lapiis = False
+			await ctx.send("inactive")
 	else:
 		ctx.send("You're not allowed to use it")
 
@@ -64,7 +66,7 @@ async def on_message(message):
 	global lapiiss
 	if lapiiss == True:
 		if message.author.id == 705116051024773213:
-			await message.add_reaction(":lapiis:1059199135217090561")
+			await message.add_reaction("😀")
 		else:
 			pass
 	else:
