@@ -9,6 +9,7 @@ import json
 import requests
 from discord import app_commands
 from wordlist import list_of_word
+import openai
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
@@ -46,7 +47,16 @@ async def choose(ctx,*,arg):
     x = random.choice(arg.split())
     await ctx.send(x)
 		
-
+@bot.command()
+async def ai(ctx, *, arg):
+    openai.api_key = os.getenv("AITOKEN")
+    response = openai.Image.create(prompt=f"{arg}", n=1, size="256x256")
+    image_url = response['data'][0]['url']
+    embed = discord.Embed(title = f"{arg}", color = discord.Colour.green())
+    url = f"{image_url}"
+    embed.set_image(url = url)
+    await ctx.send(embed = embed)
+	
 @bot.hybrid_command(name = "addrole", with_app_command = True, description = "add role")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
 @commands.has_permissions(administrator=True)
