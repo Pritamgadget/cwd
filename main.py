@@ -49,13 +49,14 @@ async def choose(ctx,*,arg):
 		
 @bot.command()
 async def ai(ctx, *, arg):
+    wait_mssg = await ctx.send('Generating <a:aniloading:1060610089314177024>')
     openai.api_key = os.getenv("AITOKEN")
     response = openai.Image.create(prompt=f"{arg}", n=1, size="256x256")
     image_url = response['data'][0]['url']
     embed = discord.Embed(title = f"{arg}", color = discord.Colour.green())
     url = f"{image_url}"
     embed.set_image(url = url)
-    await ctx.send(embed = embed)
+    await wait_mssg.edit(embed = embed, content = None)
 	
 @bot.hybrid_command(name = "addrole", with_app_command = True, description = "add role")
 @app_commands.guilds(discord.Object(id = 819630334491754547))
