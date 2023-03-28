@@ -81,7 +81,7 @@ async def on_message(message):
 async def on_message(message):
  if message.author.id == 705116051024773213:
    messagesss = "success"
-   await message.send(messagesss)
+   await message.channel.send(messagesss)
  else:
    print("no")
 
