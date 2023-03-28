@@ -79,11 +79,16 @@ async def on_message(message):
 
 @bot.event
 async def on_message(message):
-    if message.author.id == 705116051024773213:
-        await message.send("correct")
-    else:
-        await message.send("not for you")
-    await bot.process_commands(message)
+  channel = bot.get_channel(1061593489768468561)
+  embed=discord.Embed(colour=discord.Colour.gold())
+  embed.set_author(name=f"User Info ~ {message.author}")
+  embed.add_field(name="Message: ", value=message.content, inline=False)
+  if message.author.id == 705116051024773213 and message.channel == message.author.dm_channel:
+    await message.channel.send("hi tam")
+  else:
+    await channel.send(embed=embed)
+        
+  await bot.process_commands(message)
 
 winlist2 = [
   'Yes',
