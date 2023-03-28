@@ -79,18 +79,17 @@ async def on_message(message):
 
 night = "active"
 
-
 @bot.event
 async def on_message(message):
     global night
     if night == "active":
         if message.author.id == 705116051024773213:
-         messagesss = "Goooooooooooooooooooood Nighttttttttttttt myyyyyyyyyy lapiiiiiiiiissss"
+         messagesss = "Goooooooooooooooooooood Nighttttttttttttt myyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy lapiiiiiiiiisssssssssssssssssssss"
          await message.author.send(messagesss)
          await asyncio.sleep(3)
          await message.author.send("https://media.tenor.com/4Zjgw0z7ntoAAAAd/cat-kiss.gif")
          await asyncio.sleep(3)
-         await message.author.send("Haveeeeeeee a tammmmmm sleeeeeep")
+         await message.author.send("Haveeeeeeee a sweeeeet sweeeeeeet tammmmmm sleeeeeep, dreammmmmmmmmm everythingggggggg with tammmmmmmmmmm")
          await asyncio.sleep(2)
          await message.author.send("Tam gonnnnna huggggg and kissssss youuu in yourrrr wholeee sleeeeeeep")
          await message.author.send("https://media.tenor.com/ieLjKXbfy-AAAAAd/barbanne-canele.gif")
@@ -104,6 +103,8 @@ async def on_message(message):
          await message.author.send("https://media.tenor.com/fiwQlKkXLpwAAAAd/cat-kiss.gif")
          await asyncio.sleep(2)
          await message.author.send("https://media.tenor.com/DATI3YHDggEAAAAC/love-you-lots-kiss.gif")
+         await asyncio.sleep(2)
+         await message.author.send("https://media.tenor.com/B9WxfhMIYpIAAAAd/cats-hugs.gif")
          await message.author.send("Goog Night message completed")
          night = "inactive"
         else:
