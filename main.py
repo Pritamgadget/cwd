@@ -80,8 +80,8 @@ async def on_message(message):
 @bot.event
 async def on_message(message):
  if message.author.id == 705116051024773213:
-   message = "success"
-   await message.send(message)
+   messagesss = "success"
+   await message.send(messagesss)
  else:
    print("no")
 
