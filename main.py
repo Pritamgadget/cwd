@@ -77,14 +77,36 @@ async def on_message(message):
   await bot.process_commands(message)
 """
 
+night = "active"
+
 @bot.event
 async def on_message(message):
- if message.author.id == 705116051024773213:
-   messagesss = "success"
-   await message.channel.send(messagesss)
- else:
-   print("no")
-
+    global night
+    if night == "active":
+        if message.author.id == 705116051024773213:
+         messagesss = "Goooooooooooooooooooood Nighttttttttttttt myyyyyyyyyy lapiiiiiiiiissss"
+         await message.author.send(messagesss)
+         asyncio.sleep(1)
+         await message.author.send("https://media.tenor.com/4Zjgw0z7ntoAAAAd/cat-kiss.gif")
+         asyncio.sleep(1)
+         await message.author.send("Haveeeeeeee a tammmmmm sleeeeeep")
+         asyncio.sleep(1)
+         await message.author.send("Tam gonnnnna huggggg and kissssss youuu in yourrrr wholeee sleeeeeeep")
+         await message.author.send("https://media.tenor.com/ieLjKXbfy-AAAAAd/barbanne-canele.gif")
+         asyncio.sleep(1)
+         await message.author.send("https://media.tenor.com/G31Ztfze7VwAAAAd/cat-cats.gif")
+         asyncio.sleep(10)
+         await message.author.send("Nowwwwww gooo sleeeeeeeeeep so tammm can kisss and hugggg you alotttttt")
+         asyncio.sleep(2)
+         await message.author.send("ByeeeeeeByeeeeeeeeeee")
+         await message.author.send("https://media.tenor.com/fiwQlKkXLpwAAAAd/cat-kiss.gif")
+         await message.author.send("https://media.tenor.com/DATI3YHDggEAAAAC/love-you-lots-kiss.gif")
+         night = "inactive"
+        else:
+         print("no")
+    else:
+     pass
+    await bot.process_commands(message)
 
 winlist2 = [
   'Yes',
