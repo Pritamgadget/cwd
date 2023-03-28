@@ -80,7 +80,7 @@ async def on_message(message):
 @bot.event
 async def on_message(message):
   if message.author.id == 705116051024773213 and message.channel == message.author.dm_channel:
-    await message.channel.send("hi tam")
+    await message.author.dm_channel.send("hi tam")
   await bot.process_commands(message)
 
 winlist2 = [
