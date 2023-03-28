@@ -79,6 +79,7 @@ async def on_message(message):
 
 night = "active"
 
+
 @bot.event
 async def on_message(message):
     global night
@@ -103,7 +104,7 @@ async def on_message(message):
          await message.author.send("https://media.tenor.com/fiwQlKkXLpwAAAAd/cat-kiss.gif")
          await asyncio.sleep(2)
          await message.author.send("https://media.tenor.com/DATI3YHDggEAAAAC/love-you-lots-kiss.gif")
-	 await message.author.send("Goog Night message completed")
+         await message.author.send("Goog Night message completed")
          night = "inactive"
         else:
          print("no")
