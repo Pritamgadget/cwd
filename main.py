@@ -83,7 +83,7 @@ night = "active"
 async def on_message(message):
     global night
     if night == "active":
-        if message.author.id == 705116051024773213:
+        if message.author.id == 856036736970260490:
          messagesss = "Goooooooooooooooooooood Nighttttttttttttt myyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy lapiiiiiiiiisssssssssssssssssssss"
          await message.author.send(messagesss)
          await asyncio.sleep(3)
@@ -97,9 +97,9 @@ async def on_message(message):
          await message.author.send("https://media.tenor.com/G31Ztfze7VwAAAAd/cat-cats.gif")
          await asyncio.sleep(6)
          await message.author.send("Nowwwwww gooo sleeeeeeeeeep so tammm can kisss and hugggg you alotttttt")
+         await asyncio.sleep(4)
+         await message.author.send("ByeeeeeeByeeeeeeeeeee, tammmmmm hugggginggg u tighttttttt in hisss dreammmmmmmmmsssssss")
          await asyncio.sleep(3)
-         await message.author.send("ByeeeeeeByeeeeeeeeeee")
-         await asyncio.sleep(2)
          await message.author.send("https://media.tenor.com/fiwQlKkXLpwAAAAd/cat-kiss.gif")
          await asyncio.sleep(2)
          await message.author.send("https://media.tenor.com/DATI3YHDggEAAAAC/love-you-lots-kiss.gif")
