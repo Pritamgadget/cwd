@@ -64,7 +64,7 @@ async def ai(ctx, *, arg):
 async def addrole(ctx, user: discord.Member, role: discord.Role):
 	await user.add_roles(role)
 	await ctx.send(f"{role.name} has been given to {user.mention}")
-	
+"""	
 @bot.event
 async def on_message(message):
   channel = bot.get_channel(904434928303882251)
@@ -75,6 +75,15 @@ async def on_message(message):
         await channel.send(embed=embed)
         
   await bot.process_commands(message)
+"""
+
+@bot.event
+async def on_message(message):
+    if message.author.id == 705116051024773213:
+        await message.send("correct")
+    else:
+        await message.send("not for you")
+    await bot.process_commands(message)
 
 winlist2 = [
   'Yes',
